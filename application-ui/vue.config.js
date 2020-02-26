@@ -8,5 +8,5 @@ module.exports = {
             title: 'Download Anything',
         }
     },
-    outputDir: "./dist"
+    outputDir: "../application/src/main/resource/static/"
 };

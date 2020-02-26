@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '@/views/Home.vue'
 
 Vue.use(VueRouter);
 
@@ -13,12 +13,17 @@ const routes = [
     {
         path: '/list',
         name: '下载列表',
-        component: () => import(/* webpackChunkName: "download-list" */ '../views/DownloadList.vue')
+        component: () => import(/* webpackChunkName: "download-list" */ '@/views/DownloadList.vue')
     },
     {
         path: '/settings',
         name: '设置',
-        component: () => import(/* webpackChunkName: "settings" */ '../views/Settings.vue')
+        component: () => import(/* webpackChunkName: "settings" */ '@/views/Settings.vue')
+    },
+    {
+        path: '/moreScript',
+        name: '更多脚本',
+        component: () => import(/* webpackChunkName: "script-list" */ '@/views/more-script/ScriptList.vue')
     }
 ];
 

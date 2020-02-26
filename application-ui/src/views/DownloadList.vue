@@ -14,27 +14,16 @@
 
 <script>
 
-    import DownloadItem from "../components/DownloadItem";
-    import RightBottom from "../components/RightBottom";
+    import DownloadItem from "@/components/DownloadItem";
+    import RightBottom from "@/components/RightBottom";
 
     export default {
         name: "DownloadList",
-        data() {
-            return {
-                downloadList: [{
-                    "downloadId": "40e6358a7ccab1b1de61506cea9de561",
-                    "status": "FINISHED",
-                    "downloadType": "VIDEO",
-                    "fileName": "《唐人街探案3》国产巅峰喜剧",
-                    "statusFormat": "文件已存在!",
-                    "totalSize": "84.54MB",
-                    "targetPath": "C:\\Users\\dnydi\\Downloads\\《唐人街探案3》国产巅峰喜剧.mp4",
-                    "source": "哔哩哔哩",
-                    "currentSpeed": "100M/S",
-                    "progressFormat": "100%",
-                    "progress": 90.0
-                }],
-            };
+        props: {
+            downloadList: {
+                type: [Object],
+                required: true
+            }
         },
         components: {
             DownloadItem,

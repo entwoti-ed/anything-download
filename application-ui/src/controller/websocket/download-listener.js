@@ -1,6 +1,6 @@
 import SockJS from 'sockjs-client'
 import Stomp from 'stompjs'
-import {BASE_URL} from '../const/base-data'
+import {BASE_URL} from '@/controller/const/base-data'
 
 export default (listener) => {
     let socket = new SockJS(BASE_URL + '/socketConnect');

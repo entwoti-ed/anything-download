@@ -21,7 +21,7 @@
                          to="/list?active=downloading">
                 <font-awesome-icon class="mr-3" icon="download"/>
                 <span class="mr-auto">下载中</span>
-                <b-badge pill variant="primary">2</b-badge>
+                <b-badge pill variant="primary">{{downloadCount.downloadingCount}}</b-badge>
             </router-link>
 
             <!--已完成-->
@@ -32,7 +32,7 @@
                          to="/list?active=finished">
                 <font-awesome-icon class="mr-3" icon="check-circle"/>
                 <span class="mr-auto">已完成</span>
-                <b-badge pill variant="primary">2</b-badge>
+                <b-badge pill variant="primary">{{downloadCount.finishedCount}}</b-badge>
             </router-link>
 
             <!--垃圾箱-->
@@ -43,7 +43,7 @@
                          to="/list?active=trash">
                 <font-awesome-icon class="mr-3" icon="trash"/>
                 <span class="mr-auto">垃圾箱</span>
-                <b-badge pill variant="primary">2</b-badge>
+                <b-badge pill variant="primary">{{downloadCount.trashCount}}</b-badge>
             </router-link>
 
             <!--设置-->
@@ -61,7 +61,13 @@
 
 <script>
     export default {
-        name: "NavList"
+        name: "NavList",
+        props: {
+            downloadCount: {
+                type: [Object],
+                required: true
+            }
+        }
     }
 </script>
 
