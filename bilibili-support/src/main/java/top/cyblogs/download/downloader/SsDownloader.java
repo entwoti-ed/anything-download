@@ -48,8 +48,10 @@ public class SsDownloader {
         }
 
         String epTitle = parentPath + File.separator + FileUtils.getPrettyFileName(title);
+        System.out.println(BiliBiliData.header);
 
         JsonNode videoUrl = EpApi.getVideoUrl(epItem.get("aid").asText(), epItem.get("cid").asText(), epItem.get("id").asText());
+        System.out.println(videoUrl);
 
         DownloadItem videoStatus = new DownloadItem();
         videoStatus.setSource(BiliBiliData.SOURCE);
