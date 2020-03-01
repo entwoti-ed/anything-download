@@ -5,10 +5,10 @@
                     style="text-shadow: 1px 1px 2px #333;">
             <b-carousel-slide :caption="item.title"
                               :key="index"
+                              :img-src="item.imageUrl"
                               :text="item.des"
                               caption-tag="h5"
                               :img-alt="item.imageDes"
-                              :img-src="item.imageUrl"
                               v-for="(item, index) in carouselList"/>
         </b-carousel>
     </div>

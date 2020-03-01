@@ -26,12 +26,6 @@
             <artifactId>common-data</artifactId>
             <version>0.0.1</version>
         </dependency>
-        <!--下载服务-->
-        <dependency>
-            <groupId>com.cy</groupId>
-            <artifactId>download-service</artifactId>
-            <version>0.0.1</version>
-        </dependency>
     </dependencies>
 
 

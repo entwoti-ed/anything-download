@@ -63,6 +63,6 @@ public class ServiceUtils {
         if (DownloadList.list.stream().anyMatch(x -> x.getDownloadId().equals(downloadStatus.getDownloadId()))) {
             throw new AlreadyExistsException("重复添加了...");
         }
-        DownloadList.list.add(downloadStatus);
+        DownloadList.list.add(0, downloadStatus);
     }
 }

@@ -1,7 +1,9 @@
 <template>
     <!--一个下载项-->
     <section>
+
         <div class="d-flex">
+
             <!-- 下载类型图标 -->
             <div class="d-flex justify-content-center align-items-center border-right download-type">
                 <font-awesome-icon class="text-danger" icon="file-video" size="3x"/>
@@ -10,6 +12,7 @@
             <!-- 图标右边的一堆信息 -->
             <div class="d-flex flex-column flex-fill px-4 download-details"
                  style="justify-content: space-evenly;">
+
                 <!-- 第一行信息 -->
                 <section class="d-flex">
                     <span class="font-weight-bold mr-auto download-title">
@@ -19,6 +22,7 @@
                         {{item.statusFormat}}
                     </div>
                 </section>
+
                 <!-- 第二行信息 -->
                 <section class="d-flex">
                     <div class="mr-auto text-muted">
@@ -31,6 +35,7 @@
                         位置: {{item.targetPath.replace(/(.{8})(.*)(.{12})/, "$1……$3")}}
                     </div>
                 </section>
+
                 <!-- 第三行信息 -->
                 <section class="d-flex">
                     <div class="mr-auto">

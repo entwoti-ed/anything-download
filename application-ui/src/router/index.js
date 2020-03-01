@@ -1,30 +1,38 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/views/Home.vue'
+import BasicLayout from "@/views/BasicLayout";
 
 Vue.use(VueRouter);
 
 const routes = [
     {
         path: '/',
-        name: '首页',
-        component: Home
+        component: BasicLayout,
+        redirect: "/start",
+        children: [
+            {
+                path: 'start',
+                name: '首页',
+                component: () => import(/* webpackChunkName: "home" */'@/views/Home')
+            },
+            {
+                path: 'list/:active',
+                name: '下载列表',
+                component: () => import(/* webpackChunkName: "downloadList" */'@/views/DownloadList')
+            },
+            {
+                path: 'settings',
+                name: '设置',
+                component: () => import(/* webpackChunkName: "settings" */'@/views/Settings.vue')
+            },
+            {
+                path: 'moreScript',
+                name: '更多脚本',
+                component: () => import(/* webpackChunkName: "scriptList" */'@/views/more-script/ScriptList.vue')
+            }
+        ]
     },
-    {
-        path: '/list',
-        name: '下载列表',
-        component: () => import(/* webpackChunkName: "download-list" */ '@/views/DownloadList.vue')
-    },
-    {
-        path: '/settings',
-        name: '设置',
-        component: () => import(/* webpackChunkName: "settings" */ '@/views/Settings.vue')
-    },
-    {
-        path: '/moreScript',
-        name: '更多脚本',
-        component: () => import(/* webpackChunkName: "script-list" */ '@/views/more-script/ScriptList.vue')
-    }
+
 ];
 
 const router = new VueRouter({

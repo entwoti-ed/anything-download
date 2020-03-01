@@ -1,5 +1,5 @@
 <template>
-
+    <!--一个全局的状态-->
     <div id="globalStatus">
         <b-card no-body>
             <b-card-header header-tag="h5">

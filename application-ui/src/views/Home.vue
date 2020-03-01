@@ -27,7 +27,6 @@
             <span class="text-white mt-4">正在请求中, 请稍等...</span>
         </div>
 
-
         <div class="cover-screen d-flex flex-column justify-content-center align-items-center"
              v-if="currentState === 'select'">
             <div class="bg-white py-4 px-4 rounded" style="width: 30rem;">
@@ -37,19 +36,21 @@
                 <div class="mt-3 d-flex align-items-center">
                     <font-awesome-icon class="mr-3" icon="download"/>
                     <div class="font-weight-bold">下载列表</div>
-                    <b-badge class="ml-auto">全选</b-badge>
-                    <b-badge class="ml-2">反选</b-badge>
-                    <span class="ml-2 text-muted">12/12</span>
+                    <b-badge @click="selectAll" class="ml-auto">全选</b-badge>
+                    <b-badge @click="selectOther" class="ml-2">反选</b-badge>
+                    <span class="ml-2 text-muted">{{selectDownload.length}}/{{tempDownloadList.length}}</span>
                 </div>
                 <div class="mt-4" style="max-height: 16rem; overflow-y: auto;">
-                    <b-form-checkbox class="mt-1" v-model="selectDownload" value="id">
+                    <b-form-checkbox :key="index" :value="item.downloadId" class="mt-1"
+                                     v-for="(item, index) in tempDownloadList" v-model="selectDownload">
                         <p class="text-ellipsis" style="max-width: 25rem;">
-                            为什么大象的鼻子会喷水...为什么大象的鼻子会喷水..为什么大象的鼻子会喷水..为什么大象的鼻子会喷水..为什么大象的鼻子会喷水..为什么大象的鼻子会喷水..</p>
+                            {{item.fileName}}
+                        </p>
                     </b-form-checkbox>
                 </div>
                 <div class="mt-4 text-right">
                     <b-button @click="closeMessage" size="sm" variant="danger">取消</b-button>
-                    <b-button class="ml-2" size="sm" variant="success">开始</b-button>
+                    <b-button @click="startDownload" class="ml-2" size="sm" variant="success">开始</b-button>
                 </div>
             </div>
         </div>
@@ -82,11 +83,16 @@
     import {wrapLinkScript} from '@/utils/script-utils'
     import api from '@/controller/api/donwload'
 
-    // TODO 修改生产环境
+    /**
+     * 通用脚本
+     */
     let toDownloadPage = () => {
-        let href = btoa(window.location.href);
-        let cookie = btoa(document.cookie);
-        window.open(`http://127.0.0.1:8080/#/?url=${href}&cookie=${cookie}`);
+        /*获取当前页的链接*/
+        let href = window.location.href;
+        /*获取当前页的Cookie*/
+        let cookie = document.cookie;
+        /*传送到Download Anything*/
+        window.open(`http://127.0.0.1:10086/#/?url=${btoa(href)}&cookie=${btoa(cookie)}`);
     };
 
     export default {
@@ -100,32 +106,102 @@
         data() {
             return {
                 generalScript: wrapLinkScript(toDownloadPage),
+                selectDownload: [],
+                tempDownloadList: [],
+                singleItem: null,
                 currentState: null,
                 errorInfo: null,
             }
         },
         methods: {
+            /**
+             * 进入首页检查路由中是否带有参数
+             * 进行Base64解码
+             * 然后传递到后台进行解析下载
+             * 解析成功后前台显示下载列表
+             * 用户选择后进行下载
+             */
             initialDownload() {
                 let query = this.$route.query;
                 let keys = Object.keys(query);
                 if (!keys.length) return;
-                this.currentState = 'waiting';
                 keys.forEach(x => {
                     query[x] = atob(query[x]);
                 });
-                api.addDownload(query, response => {
-                    if (response.flag) {
-                        // 下载列表
-                    } else {
-                        this.errorInfo = response.message;
-                        this.currentState = "error";
-                    }
-
-                })
+                this.showWaiting();
+                if (query["serviceType"]) {
+                    query["title"] = decodeURI(query["title"]);
+                    this.showSelectList([{
+                        fileName: query["title"],
+                        downloadId: "singleItem"
+                    }]);
+                    this.singleItem = query;
+                } else {
+                    api.downloadList(query, response => {
+                        if (response.flag) {
+                            this.showSelectList(response.data);
+                        } else {
+                            this.showError(response.message);
+                        }
+                    });
+                }
+            },
+            showSelectList(selectList) {
+                this.tempDownloadList = selectList;
+                this.selectAll();
+                this.currentState = 'select';
+            },
+            showError(message) {
+                this.errorInfo = message;
+                this.currentState = "error";
+            },
+            showWaiting() {
+                this.currentState = 'waiting';
             },
             closeMessage() {
+                this.selectDownload = [];
+                this.tempDownloadList = [];
                 this.currentState = null;
-                this.errorInfo = null
+                this.errorInfo = null;
+                this.singleItem = null;
+                let loc = window.location;
+                let url = loc.protocol + "//" + loc.host + loc.pathname + "#/start";
+                window.history.replaceState(null, null, url);
+            },
+            selectAll() {
+                this.selectDownload = this.tempDownloadList.map(x => x.downloadId);
+            },
+            selectOther() {
+                this.selectDownload = this.tempDownloadList.map(x => x.downloadId).filter(x => this.selectDownload.indexOf(x) === -1);
+            },
+            startDownload() {
+                if (!this.selectDownload.length) {
+                    this.showError("你啥都没选...");
+                    return;
+                }
+                if (this.singleItem !== null) {
+                    api.normalDownload(this.singleItem, response => {
+                        if (response.flag) {
+                            this.closeMessage();
+                            this.$router.replace({
+                                path: `/list/downloading`
+                            });
+                        } else {
+                            this.showError(response.message);
+                        }
+                    });
+                } else {
+                    api.startDownload(this.selectDownload, response => {
+                        if (response.flag) {
+                            this.closeMessage();
+                            this.$router.replace({
+                                path: `/list/downloading`
+                            })
+                        } else {
+                            this.showError(response.message);
+                        }
+                    });
+                }
             }
         }
     }

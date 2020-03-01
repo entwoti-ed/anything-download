@@ -3,12 +3,14 @@ package top.cyblogs.download.downloader;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.AvApi;
 import top.cyblogs.data.BiliBiliData;
+import top.cyblogs.data.DownloadList;
 import top.cyblogs.data.SettingsData;
 import top.cyblogs.model.DownloadItem;
+import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
-import top.cyblogs.service.SegmentVideoService;
-import top.cyblogs.service.SeperateVideoService;
+import top.cyblogs.model.enums.ServiceType;
 import top.cyblogs.util.FileUtils;
+import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
@@ -48,20 +50,23 @@ public class AvDownloader {
             DownloadItem videoStatus = new DownloadItem();
             videoStatus.setSource(BiliBiliData.SOURCE);
             videoStatus.setDownloadType(DownloadType.VIDEO);
+            File targetFile = new File(SettingsData.path + title + ".mp4");
+            String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
 
             if (dash != null) {
                 String[] dashUrl = getDashUrl(dash);
-                SeperateVideoService.download(dashUrl, new File(SettingsData.path + title + ".mp4"), BiliBiliData.header, videoStatus);
+                TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEPERATE, null, dashUrl, targetFile, BiliBiliData.header, videoStatus);
+                DownloadList.tempList.add(tempDownloadItem);
                 return;
             }
             // 如果视频为durl
             JsonNode durl = videoUrl.findValue("durl");
             if (durl != null) {
                 String[] durlUrl = getDurlUrl(durl);
-                SegmentVideoService.download(durlUrl, new File(SettingsData.path + title + ".mp4"), BiliBiliData.header, videoStatus);
+                TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEGMENT, null, durlUrl, targetFile, BiliBiliData.header, videoStatus);
+                DownloadList.tempList.add(tempDownloadItem);
             }
         });
-
     }
 
     /**

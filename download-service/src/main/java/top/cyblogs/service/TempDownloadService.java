@@ -43,7 +43,8 @@ class TempDownloadService {
                   DownloadItem downloadStatus, MergeVideoListener listener) {
 
         String name = targetFile.getName();
-        downloadStatus.setFileName(name.substring(0, name.lastIndexOf(".")));
+        int lastIndexOf = name.lastIndexOf(".");
+        downloadStatus.setFileName(lastIndexOf == -1 ? name : name.substring(0, lastIndexOf));
         downloadStatus.setTargetPath(targetFile.getAbsolutePath());
         downloadStatus.setStatus(DownloadStatus.WAITING);
         downloadStatus.setStatusFormat("等待下载...");

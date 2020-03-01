@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.AmApi;
 import top.cyblogs.api.AuApi;
 import top.cyblogs.data.BiliBiliData;
+import top.cyblogs.data.DownloadList;
 import top.cyblogs.data.SettingsData;
 import top.cyblogs.model.DownloadItem;
+import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
-import top.cyblogs.service.NormalDownloadService;
+import top.cyblogs.model.enums.ServiceType;
 import top.cyblogs.util.FileUtils;
 import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.BiliBiliUtils;
@@ -41,13 +43,21 @@ public class AmDownloader {
             DownloadItem mp3Status = new DownloadItem();
             mp3Status.setSource(BiliBiliData.SOURCE);
             mp3Status.setDownloadType(DownloadType.AUDIO);
-            NormalDownloadService.download(music, new File(SettingsData.path + filePath + ".mp3"), BiliBiliData.header, mp3Status);
+            File targetFile = new File(SettingsData.path + filePath + ".mp3");
+            String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
+            TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, music, null, targetFile, BiliBiliData.header, mp3Status);
+            DownloadList.tempList.add(tempDownloadItem);
 
             if (StringUtils.isNotEmpty(lyric)) {
+
+
                 DownloadItem lrcStatus = new DownloadItem();
                 lrcStatus.setSource(BiliBiliData.SOURCE);
                 lrcStatus.setDownloadType(DownloadType.LRC);
-                NormalDownloadService.download(lyric, new File(SettingsData.path + filePath + ".lrc"), BiliBiliData.header, lrcStatus);
+                File lrcTargetFile = new File(SettingsData.path + filePath + ".lrc");
+                String lrcDownloadId = StringUtils.md5(lrcTargetFile.getAbsolutePath());
+                TempDownloadItem lrcTempDownloadItem = new TempDownloadItem(lrcDownloadId, lrcTargetFile.getName(), ServiceType.NORMAL, lyric, null, lrcTargetFile, BiliBiliData.header, lrcStatus);
+                DownloadList.tempList.add(lrcTempDownloadItem);
             }
 
             long aid = x.findValue("aid").asLong();

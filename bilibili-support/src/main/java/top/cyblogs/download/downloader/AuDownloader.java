@@ -3,10 +3,12 @@ package top.cyblogs.download.downloader;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.AuApi;
 import top.cyblogs.data.BiliBiliData;
+import top.cyblogs.data.DownloadList;
 import top.cyblogs.data.SettingsData;
 import top.cyblogs.model.DownloadItem;
+import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
-import top.cyblogs.service.NormalDownloadService;
+import top.cyblogs.model.enums.ServiceType;
 import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
@@ -29,10 +31,13 @@ public class AuDownloader {
         }
         JsonNode musicUrl = AuApi.getMusicUrl(playId);
         String downloadUrl = musicUrl.findValue("data").findValue("cdns").get(0).asText();
+
         DownloadItem mp3Status = new DownloadItem();
         mp3Status.setSource(BiliBiliData.SOURCE);
         mp3Status.setDownloadType(DownloadType.AUDIO);
-        NormalDownloadService.download(downloadUrl, new File(SettingsData.path + title + ".mp3"),
-                BiliBiliData.header, mp3Status);
+        File targetFile = new File(SettingsData.path + title + ".mp3");
+        String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
+        TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, downloadUrl, null, targetFile, BiliBiliData.header, mp3Status);
+        DownloadList.tempList.add(tempDownloadItem);
     }
 }

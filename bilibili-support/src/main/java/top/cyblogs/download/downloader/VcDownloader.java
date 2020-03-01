@@ -3,11 +3,14 @@ package top.cyblogs.download.downloader;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.VcApi;
 import top.cyblogs.data.BiliBiliData;
+import top.cyblogs.data.DownloadList;
 import top.cyblogs.data.SettingsData;
 import top.cyblogs.model.DownloadItem;
+import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
-import top.cyblogs.service.NormalDownloadService;
+import top.cyblogs.model.enums.ServiceType;
 import top.cyblogs.util.FileUtils;
+import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
@@ -25,7 +28,9 @@ public class VcDownloader {
         DownloadItem videoStatus = new DownloadItem();
         videoStatus.setSource(BiliBiliData.SOURCE);
         videoStatus.setDownloadType(DownloadType.VIDEO);
-
-        NormalDownloadService.download(videoPlayUrl, new File(SettingsData.path + title + ".mp4"), BiliBiliData.header, videoStatus);
+        File targetFile = new File(SettingsData.path + title + ".mp4");
+        String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
+        TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEGMENT, videoPlayUrl, null, targetFile, BiliBiliData.header, videoStatus);
+        DownloadList.tempList.add(tempDownloadItem);
     }
 }
