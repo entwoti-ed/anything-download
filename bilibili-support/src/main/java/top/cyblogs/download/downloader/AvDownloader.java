@@ -55,7 +55,7 @@ public class AvDownloader {
 
             if (dash != null) {
                 String[] dashUrl = getDashUrl(dash);
-                TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEPERATE, null, dashUrl, targetFile, BiliBiliData.header, videoStatus);
+                TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEPERATE, null, dashUrl, targetFile, BiliBiliData.header(), videoStatus);
                 DownloadList.tempList.add(tempDownloadItem);
                 return;
             }
@@ -63,7 +63,7 @@ public class AvDownloader {
             JsonNode durl = videoUrl.findValue("durl");
             if (durl != null) {
                 String[] durlUrl = getDurlUrl(durl);
-                TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEGMENT, null, durlUrl, targetFile, BiliBiliData.header, videoStatus);
+                TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEGMENT, null, durlUrl, targetFile, BiliBiliData.header(), videoStatus);
                 DownloadList.tempList.add(tempDownloadItem);
             }
         });

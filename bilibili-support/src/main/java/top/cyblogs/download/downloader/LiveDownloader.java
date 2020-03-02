@@ -46,7 +46,7 @@ public class LiveDownloader {
             // 获取下载地址
             JsonNode roomPlayInfo = LiveApi.getPlayUrl(playId);
             String liveUrl = roomPlayInfo.findValue("data").findValue("durl").get(0).findValue("url").asText();
-            DownloadList.tempList.add(new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, liveUrl, null, targetFile, BiliBiliData.header, videoStatus));
+            DownloadList.tempList.add(new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, liveUrl, null, targetFile, BiliBiliData.header(), videoStatus));
         } else if (liveStatus == 2) {
             // 轮播
             System.err.println("轮播中");

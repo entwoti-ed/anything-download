@@ -1,7 +1,5 @@
 <template>
     <div class="container py-4" id="app">
-        <!--程序标题-->
-        <GlobalTitle/>
 
         <div class="row mt-3">
 
@@ -9,8 +7,6 @@
             <div class="col-lg-3 col-md-0" id="left">
                 <!--导航列表-->
                 <NavList/>
-                <!--全局下载状态-->
-                <GlobalStatus class="mt-4"/>
             </div>
 
             <!--右侧区域-->
@@ -28,10 +24,10 @@
 
         <!--页脚信息-->
         <footer class="mt-5 text-center">
-            <a class="text-muted" href="https://halo.cyblogs.top">
+            <a class="text-muted" href="https://halo.cyblogs.top" title="访问我的博客" v-b-tooltip.hover>
                 CY'Blogs
             </a>
-            <router-link class="text-muted ml-3"
+            <router-link class="text-muted ml-3" title="更多下载脚本" v-b-tooltip.hover
                          exact replace tag="a"
                          to="/moreScript">
                 更多脚本
@@ -41,9 +37,7 @@
 </template>
 
 <script>
-    import GlobalTitle from "@/components/GlobalTitle";
     import NavList from "@/components/NavList";
-    import GlobalStatus from "@/components/GlobalStatus";
     import MobileNavList from "@/components/MobileNavList";
     import {mapActions} from "vuex"
 
@@ -65,8 +59,6 @@
         },
         components: {
             NavList,
-            GlobalTitle,
-            GlobalStatus,
             MobileNavList
         },
         methods: {

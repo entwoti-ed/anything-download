@@ -56,5 +56,10 @@ public class PathData {
     /**
      * 设置文件保存的路径
      */
-    public transient static final String SETTING_FILE_PATH = APP_DATA_PATH + BaseData.APP_NAME + File.separator + "settings.conf";
+    public transient static final String SETTING_FILE_PATH = APP_DATA_PATH + BaseData.APP_NAME + File.separator + ".setting";
+
+    /**
+     * Session文件保存路径
+     */
+    public transient static final String SESSION_FILE_PATH = APP_DATA_PATH + BaseData.APP_NAME + File.separator + ".session";
 }

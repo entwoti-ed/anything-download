@@ -1,12 +1,18 @@
 <template>
     <div id="downloadList">
-        <section :key="index"
-                 v-for="(item, index) in downloadList">
-            <DownloadItem :class="index === downloadList.length - 1 ? 'border-bottom' : ''"
-                          :item="item"
-                          class="border-top"/>
-        </section>
-        <RightBottom/>
+        <div v-if="downloadList.length !== 0">
+            <section :key="index"
+                     v-for="(item, index) in downloadList">
+                <DownloadItem :class="index === downloadList.length - 1 ? 'border-bottom' : ''"
+                              :item="item"
+                              class="border-top"/>
+            </section>
+            <RightBottom/>
+        </div>
+        <div class="text-center text-muted" style="line-height: 58vh;" v-else>
+            空下载列表...
+        </div>
+
     </div>
 </template>
 

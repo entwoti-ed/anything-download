@@ -1,8 +1,8 @@
 package top.cyblogs.utils;
 
+import com.cy.exception.AlreadyExistsException;
 import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.data.DownloadList;
-import top.cyblogs.exception.AlreadyExistsException;
 import top.cyblogs.model.DownloadItem;
 
 import java.io.File;

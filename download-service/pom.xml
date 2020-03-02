@@ -15,12 +15,6 @@
     <description>下载服务接口，所用的Support必须要依赖这个接口</description>
 
     <dependencies>
-        <!--工具类-->
-        <dependency>
-            <groupId>com.cy</groupId>
-            <artifactId>download-utils</artifactId>
-            <version>0.0.1</version>
-        </dependency>
         <!--公共数据-->
         <dependency>
             <groupId>com.cy</groupId>
@@ -32,6 +26,18 @@
             <groupId>com.cy</groupId>
             <artifactId>ffmpeg-utils</artifactId>
             <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cy</groupId>
+            <artifactId>custom-exception</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.cy</groupId>
+            <artifactId>jaria2c-rpc</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

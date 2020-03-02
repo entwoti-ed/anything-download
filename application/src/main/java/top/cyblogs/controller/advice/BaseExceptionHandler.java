@@ -1,5 +1,6 @@
 package top.cyblogs.controller.advice;
 
+import com.cy.exception.AbstractResultException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,14 @@ import top.cyblogs.model.response.BaseResponse;
 @Slf4j
 @RestControllerAdvice
 public class BaseExceptionHandler {
+
+    /**
+     * 处理程序的异常
+     */
+    @ExceptionHandler(value = AbstractResultException.class)
+    public BaseResponse<Object> error(AbstractResultException e) {
+        return new BaseResponse<>(false, e.getStatus(), e.getMessage(), null);
+    }
 
     /**
      * 处理全局的异常

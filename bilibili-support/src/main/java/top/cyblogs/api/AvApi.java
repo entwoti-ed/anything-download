@@ -15,7 +15,7 @@ import top.cyblogs.utils.BiliBiliUtils;
 public class AvApi {
 
     /*获取视频链接API*/
-    private static final String VIDEO_URL = "https://api.bilibili.com/x/player/playurl?avid=%s&cid=%s&qn=112&type=json&otype=json&fnver=0&fnval=16";
+    private static final String VIDEO_URL = "https://api.bilibili.com/x/player/playurl?avid=%s&cid=%s&qn=1024&type=json&otype=json&fnver=0&fnval=16";
     /*AV首页的URL用来获取初始信息*/
     private static final String AV_INDEX_URL = "https://www.bilibili.com/video/av%s";
     /*AV分P的URL，用来获取各个P的视频URL*/

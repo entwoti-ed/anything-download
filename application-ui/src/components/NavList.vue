@@ -20,7 +20,8 @@
                      tag="b-list-group-item"
                      to="/list/downloading">
             <font-awesome-icon class="mr-3" icon="download"/>
-            <span class="mr-auto">下载中</span>
+            <span class="mr-1">下载中</span>
+            <span class="small mr-auto">{{globalStatus}}</span>
             <b-badge pill variant="primary">{{downloadingList.length}}</b-badge>
         </router-link>
 
@@ -68,7 +69,8 @@
             ...mapState([
                 "downloadingList",
                 "finishedList",
-                "trashList"
+                "trashList",
+                "globalStatus"
             ])
         }
     }

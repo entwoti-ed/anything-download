@@ -14,7 +14,7 @@ import top.cyblogs.utils.BiliBiliUtils;
  */
 public class EpApi {
 
-    private static final String VIDEO_URL = "https://api.bilibili.com/pgc/player/web/playurl?avid=%s&cid=%s&qn=112&type=json&otype=json&ep_id=%s&fnver=0&fnval=16";
+    private static final String VIDEO_URL = "https://api.bilibili.com/pgc/player/web/playurl?avid=%s&cid=%s&qn=1024&type=json&otype=json&ep_id=%s&fnver=0&fnval=16";
     private static final String EP_INITIAL_STATE_URL = "https://www.bilibili.com/bangumi/play/ep%s";
     private static final String EP_INITIAL_STATE_START = "window.__INITIAL_STATE__=";
     private static final String EP_INITIAL_STATE_END = ";(function()";

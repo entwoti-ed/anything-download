@@ -1,7 +1,7 @@
 package top.cyblogs.download;
 
+import com.cy.exception.AlreadyExistsException;
 import top.cyblogs.data.SettingsData;
-import top.cyblogs.exception.AlreadyExistsException;
 import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.service.HlsVideoService;
 import top.cyblogs.service.NormalDownloadService;

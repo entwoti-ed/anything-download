@@ -11,10 +11,8 @@
 
 <script>
 
-    // 更多脚本列表
-    import moreScript from './more'
-    // 脚本包装工具
-    import {wrapLinkScript} from '@/utils/script-utils'
+    // 脚本列表
+    import scriptList from '../scripts'
 
     export default {
         name: "ScriptList",
@@ -22,8 +20,16 @@
             return {
                 scriptList: [{
                     name: "PornHub",
-                    script: wrapLinkScript(moreScript.pornHub),
+                    script: scriptList.pornHub,
                     icon: "porn-hub-icon"
+                }, {
+                    name: "Tencent Video",
+                    script: scriptList.tencentVideo,
+                    icon: "tencent-video-icon"
+                }, {
+                    name: "Youku Video",
+                    script: scriptList.youkuVideo,
+                    icon: "youku-video-icon"
                 }]
             };
         }
@@ -42,5 +48,13 @@
 
     .porn-hub-icon {
         background-image: url("~@/assets/logo/pornhub.png");
+    }
+
+    .tencent-video-icon {
+        background-image: url("~@/assets/logo/tecent-video.jpg");
+    }
+
+    .youku-video-icon {
+        background-image: url("~@/assets/logo/youku-video.jpeg");
     }
 </style>

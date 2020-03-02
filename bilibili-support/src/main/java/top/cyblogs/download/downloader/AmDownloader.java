@@ -45,7 +45,7 @@ public class AmDownloader {
             mp3Status.setDownloadType(DownloadType.AUDIO);
             File targetFile = new File(SettingsData.path + filePath + ".mp3");
             String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
-            TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, music, null, targetFile, BiliBiliData.header, mp3Status);
+            TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, music, null, targetFile, BiliBiliData.header(), mp3Status);
             DownloadList.tempList.add(tempDownloadItem);
 
             if (StringUtils.isNotEmpty(lyric)) {
@@ -56,7 +56,7 @@ public class AmDownloader {
                 lrcStatus.setDownloadType(DownloadType.LRC);
                 File lrcTargetFile = new File(SettingsData.path + filePath + ".lrc");
                 String lrcDownloadId = StringUtils.md5(lrcTargetFile.getAbsolutePath());
-                TempDownloadItem lrcTempDownloadItem = new TempDownloadItem(lrcDownloadId, lrcTargetFile.getName(), ServiceType.NORMAL, lyric, null, lrcTargetFile, BiliBiliData.header, lrcStatus);
+                TempDownloadItem lrcTempDownloadItem = new TempDownloadItem(lrcDownloadId, lrcTargetFile.getName(), ServiceType.NORMAL, lyric, null, lrcTargetFile, BiliBiliData.header(), lrcStatus);
                 DownloadList.tempList.add(lrcTempDownloadItem);
             }
 

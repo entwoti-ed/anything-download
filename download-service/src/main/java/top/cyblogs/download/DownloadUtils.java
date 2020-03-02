@@ -3,6 +3,7 @@ package top.cyblogs.download;
 import top.cyblogs.Aria2c;
 import top.cyblogs.data.PathData;
 import top.cyblogs.input.Aria2cOptions;
+import top.cyblogs.output.Aria2cGlobalStat;
 import top.cyblogs.output.Aria2cStatus;
 import top.cyblogs.start.Aria2cRpcOptions;
 import top.cyblogs.support.DownloadTaskStatus;
@@ -134,6 +135,10 @@ public class DownloadUtils {
                 }
             }
         });
+    }
+
+    public static Aria2cGlobalStat globalStatus() {
+        return aria2c.getGlobalStat(token);
     }
 
     /**

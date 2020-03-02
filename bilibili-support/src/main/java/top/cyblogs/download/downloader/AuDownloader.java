@@ -37,7 +37,7 @@ public class AuDownloader {
         mp3Status.setDownloadType(DownloadType.AUDIO);
         File targetFile = new File(SettingsData.path + title + ".mp3");
         String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
-        TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, downloadUrl, null, targetFile, BiliBiliData.header, mp3Status);
+        TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, downloadUrl, null, targetFile, BiliBiliData.header(), mp3Status);
         DownloadList.tempList.add(tempDownloadItem);
     }
 }

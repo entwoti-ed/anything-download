@@ -30,7 +30,7 @@ public class VcDownloader {
         videoStatus.setDownloadType(DownloadType.VIDEO);
         File targetFile = new File(SettingsData.path + title + ".mp4");
         String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
-        TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEGMENT, videoPlayUrl, null, targetFile, BiliBiliData.header, videoStatus);
+        TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEGMENT, videoPlayUrl, null, targetFile, BiliBiliData.header(), videoStatus);
         DownloadList.tempList.add(tempDownloadItem);
     }
 }

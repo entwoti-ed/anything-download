@@ -28,7 +28,7 @@ const routes = [
             {
                 path: 'moreScript',
                 name: '更多脚本',
-                component: () => import(/* webpackChunkName: "scriptList" */'@/views/more-script/ScriptList.vue')
+                component: () => import(/* webpackChunkName: "scriptList" */'@/views/ScriptList.vue')
             }
         ]
     },

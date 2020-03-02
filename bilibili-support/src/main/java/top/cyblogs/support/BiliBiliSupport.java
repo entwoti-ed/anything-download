@@ -1,16 +1,24 @@
 package top.cyblogs.support;
 
+import com.cy.exception.ForbiddenException;
+import com.fasterxml.jackson.databind.JsonNode;
+import top.cyblogs.api.CommonApi;
 import top.cyblogs.data.BiliBiliData;
+import top.cyblogs.data.LoginSession;
 import top.cyblogs.download.downloader.*;
 import top.cyblogs.download.enums.DownloadType;
 
 /**
  * 下载列表服务，根据用户输入的URL获取下载列表
+ *
+ * @author CY
  */
 public class BiliBiliSupport {
 
     public static void start(String url, String cookie) {
-        BiliBiliData.cookie = cookie;
+
+        setCookie(cookie);
+
         // 下载普通UP主的视频
         if (url.contains(DownloadType.AV.getUrlPrefix())) {
             AvDownloader.download(url);
@@ -38,18 +46,38 @@ public class BiliBiliSupport {
         // 下载BiliBili的小视频
         else if (url.contains(DownloadType.VC.getUrlPrefix())) {
             VcDownloader.download(url);
-        } else {
-            throw new IllegalArgumentException(
-                    "Bilibili只支持下面的URL(*是通配符)</br><div class='text-danger'>" +
-                            "*www.bilibili.com/video/av*</br>" +
-                            "*www.bilibili.com/bangumi/play/ep*</br>" +
-                            "*www.bilibili.com/audio/am*</br>" +
-                            "*www.bilibili.com/audio/au*</br>" +
-                            "*live.bilibili.com*</br>" +
-                            "*www.bilibili.com/bangumi/play/ss*</br>" +
-                            "*vc.bilibili.com/video*</br></div>" +
-                            "如果你觉得不够用，请告诉我你想要添加的地址..."
-            );
         }
+        // 不被支持
+        else {
+            throw new IllegalArgumentException("暂时还不支持你的URL!");
+        }
+    }
+
+    /**
+     * 设置Cookie
+     *
+     * @param cookie Cookie
+     */
+    private static void setCookie(String cookie) {
+        // 读取硬盘上的Session
+        String session = LoginSession.getSession().getBilibiliSession();
+
+        if (session == null || !isSessionValid(session)) {
+            // 硬盘上的Cookie不能用了，在检查前端的
+            if (cookie != null && isSessionValid(cookie)) {
+                LoginSession.getSession().setBilibiliSession(cookie).saveSession();
+            } else {
+                throw new ForbiddenException("需要Cookie!");
+            }
+        }
+    }
+
+    /**
+     * Session是否有效
+     */
+    private static boolean isSessionValid(String cookie) {
+        BiliBiliData.cookie = cookie;
+        JsonNode userInfo = CommonApi.getUserInfo();
+        return userInfo.findValue("isLogin").asBoolean();
     }
 }

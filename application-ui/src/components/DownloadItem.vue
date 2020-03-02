@@ -15,31 +15,32 @@
 
                 <!-- 第一行信息 -->
                 <section class="d-flex">
-                    <span class="font-weight-bold mr-auto download-title">
-                        {{item.fileName}}
+                    <span :title="item.fileName || '正在获取文件名...'" class="font-weight-bold mr-auto download-title"
+                          v-b-tooltip.hover>
+                        {{item.fileName || "正在获取文件名..."}}
                     </span>
                     <div class="text-muted download-status-lg">
-                        {{item.statusFormat}}
+                        {{item.statusFormat || "正在连接..."}}
                     </div>
                 </section>
 
                 <!-- 第二行信息 -->
                 <section class="d-flex">
                     <div class="mr-auto text-muted">
-                        大小: {{item.totalSize}}
+                        大小: {{item.totalSize || "--KB"}}
                     </div>
                     <div class="text-muted download-status-sm">
-                        {{item.statusFormat}}
+                        {{item.statusFormat || "正在连接..."}}
                     </div>
-                    <div class="text-muted target-path">
-                        位置: {{item.targetPath.replace(/(.{8})(.*)(.{12})/, "$1……$3")}}
+                    <div :title="item.targetPath || '稍等...'" class="text-muted target-path" v-b-tooltip.hover.bottom>
+                        位置: {{(item.targetPath || "").replace(/(.{8})(.*)(.{12})/, "$1……$3") || "稍等..."}}
                     </div>
                 </section>
 
                 <!-- 第三行信息 -->
                 <section class="d-flex">
                     <div class="mr-auto">
-                        来源: <span class="text-danger">{{item.source}}</span>
+                        来源: <span class="text-danger">{{item.source || "稍等..."}}</span>
                     </div>
                     <div class="text-muted">
                         {{item.currentSpeed}}
@@ -67,7 +68,7 @@
         <!-- 进度条 -->
         <div style="background-color: darkgrey">
             <div :class="item.status === 'DOWNLOADING' ? 'bg-danger' : item.status === 'MERGING' ? 'bg-info' : item.status === 'FINISHED' ? 'bg-success' : ''"
-                 :style="`width: ${item.progress}%;`"
+                 :style="`width: ${isNaN(item.progress) ? 0 : item.progress}%;`"
                  style="height: 3px;"></div>
         </div>
     </section>

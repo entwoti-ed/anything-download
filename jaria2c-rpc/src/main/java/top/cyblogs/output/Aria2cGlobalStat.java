@@ -15,20 +15,20 @@ import lombok.Data;
 public class Aria2cGlobalStat {
 
     @JsonProperty("numActive")
-    private String numActive;
+    private Long numActive;
 
     @JsonProperty("numWaiting")
-    private String numWaiting;
+    private Long numWaiting;
 
     @JsonProperty("downloadSpeed")
-    private String downloadSpeed;
+    private Long downloadSpeed;
 
     @JsonProperty("uploadSpeed")
-    private String uploadSpeed;
+    private Long uploadSpeed;
 
     @JsonProperty("numStopped")
-    private String numStopped;
+    private Long numStopped;
 
     @JsonProperty("numStoppedTotal")
-    private String numStoppedTotal;
+    private Long numStoppedTotal;
 }

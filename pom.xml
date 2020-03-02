@@ -19,6 +19,7 @@
         <module>51cto-support</module>
         <module>tencent-support</module>
         <module>chinahadoop-support</module>
+        <module>custom-exception</module>
     </modules>
 
     <parent>

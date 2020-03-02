@@ -1,7 +1,12 @@
 <template>
     <div id="home">
-        <!-- 轮播图 -->
-        <CarouselImage/>
+
+        <!--程序标题-->
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <h1 class="text-muted text-monospace">Download Anything</h1>
+            <small>理论上可以下载一切的下载器(可以用手机控制)</small>
+            <small>每次启动都是全新的，请一次性下载完</small>
+        </div>
 
         <div class="my-3">粘贴链接到下面, 然后点击下载按钮</div>
 
@@ -73,44 +78,48 @@
                 </div>
             </div>
         </div>
+
+        <div class="cover-screen d-flex flex-column justify-content-center align-items-center"
+             v-if="currentState === 'login'">
+            <div class="bg-white py-4 px-4 rounded" style="width: 30rem;">
+                <div class="border-bottom pb-3">
+                    <span class="font-weight-bold">需要登录</span>
+                </div>
+                <div class="mt-4">
+                    <b-form-group label="请粘贴Cookie" label-for="paste">
+                        <b-form-input id="paste" required type="text" v-model="cookie"/>
+                    </b-form-group>
+                </div>
+                <div class="text-right mt-4">
+                    <b-button @click="initialDownload" variant="info">好了</b-button>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 
-    import CarouselImage from "@/components/CarouselImages";
-    // 脚本包装工具
-    import {wrapLinkScript} from '@/utils/script-utils'
     import api from '@/controller/api/donwload'
 
-    /**
-     * 通用脚本
-     */
-    let toDownloadPage = () => {
-        /*获取当前页的链接*/
-        let href = window.location.href;
-        /*获取当前页的Cookie*/
-        let cookie = document.cookie;
-        /*传送到Download Anything*/
-        window.open(`http://127.0.0.1:10086/#/?url=${btoa(href)}&cookie=${btoa(cookie)}`);
-    };
+    import scriptList from '../scripts'
 
     export default {
         name: 'Home',
         components: {
-            CarouselImage
         },
         created() {
             this.initialDownload();
         },
         data() {
             return {
-                generalScript: wrapLinkScript(toDownloadPage),
+                generalScript: scriptList.general,
                 selectDownload: [],
                 tempDownloadList: [],
                 singleItem: null,
                 currentState: null,
                 errorInfo: null,
+                cookie: null
             }
         },
         methods: {
@@ -123,14 +132,18 @@
              */
             initialDownload() {
                 let query = this.$route.query;
-                let keys = Object.keys(query);
-                if (!keys.length) return;
-                keys.forEach(x => {
-                    query[x] = atob(query[x]);
-                });
+                if (this.cookie) {
+                    query["cookie"] = this.cookie;
+                    this.cookie = null;
+                } else {
+                    let keys = Object.keys(query);
+                    if (!keys.length) return;
+                    keys.forEach(x => {
+                        query[x] = decodeURIComponent(atob(decodeURIComponent(query[x])));
+                    });
+                }
                 this.showWaiting();
                 if (query["serviceType"]) {
-                    query["title"] = decodeURI(query["title"]);
                     this.showSelectList([{
                         fileName: query["title"],
                         downloadId: "singleItem"
@@ -141,7 +154,11 @@
                         if (response.flag) {
                             this.showSelectList(response.data);
                         } else {
-                            this.showError(response.message);
+                            if (response.status === "FORBIDDEN") {
+                                this.showLogin();
+                            } else {
+                                this.showError(response.message);
+                            }
                         }
                     });
                 }
@@ -157,6 +174,9 @@
             },
             showWaiting() {
                 this.currentState = 'waiting';
+            },
+            showLogin() {
+                this.currentState = 'login';
             },
             closeMessage() {
                 this.selectDownload = [];

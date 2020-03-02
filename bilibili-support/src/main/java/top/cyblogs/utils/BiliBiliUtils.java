@@ -1,8 +1,8 @@
 package top.cyblogs.utils;
 
 
+import com.cy.exception.InternetException;
 import top.cyblogs.data.BiliBiliData;
-import top.cyblogs.exception.InternetException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +52,7 @@ public class BiliBiliUtils {
      * 获取URL中的文本
      */
     public static String urlText(String url) {
-        return urlText(url, BiliBiliData.header);
+        return urlText(url, BiliBiliData.header());
     }
 
     /**

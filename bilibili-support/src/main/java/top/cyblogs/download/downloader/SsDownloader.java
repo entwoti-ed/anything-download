@@ -48,7 +48,7 @@ public class SsDownloader {
         }
 
         String epTitle = parentPath + File.separator + FileUtils.getPrettyFileName(title);
-        System.out.println(BiliBiliData.header);
+        System.out.println(BiliBiliData.header());
 
         JsonNode videoUrl = EpApi.getVideoUrl(epItem.get("aid").asText(), epItem.get("cid").asText(), epItem.get("id").asText());
         System.out.println(videoUrl);
@@ -63,7 +63,7 @@ public class SsDownloader {
         JsonNode dash = videoUrl.findValue("dash");
         if (dash != null) {
             String[] dashUrl = getDashUrl(dash);
-            TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEPERATE, null, dashUrl, targetFile, BiliBiliData.header, videoStatus);
+            TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEPERATE, null, dashUrl, targetFile, BiliBiliData.header(), videoStatus);
             DownloadList.tempList.add(tempDownloadItem);
             return;
         }
@@ -71,7 +71,7 @@ public class SsDownloader {
         JsonNode durl = videoUrl.findValue("durl");
         if (durl != null) {
             String[] durlUrl = getDurlUrl(durl);
-            TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEGMENT, null, durlUrl, targetFile, BiliBiliData.header, videoStatus);
+            TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEGMENT, null, durlUrl, targetFile, BiliBiliData.header(), videoStatus);
             DownloadList.tempList.add(tempDownloadItem);
         }
     }

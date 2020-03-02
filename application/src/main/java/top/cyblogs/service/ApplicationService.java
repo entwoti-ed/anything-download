@@ -1,11 +1,12 @@
 package top.cyblogs.service;
 
+import com.cy.exception.AlreadyExistsException;
+import com.cy.exception.NothingException;
+import com.cy.exception.UrlNotSupportException;
 import org.springframework.stereotype.Service;
 import top.cyblogs.data.DownloadList;
 import top.cyblogs.data.SettingsData;
 import top.cyblogs.download.DownloadServiceExec;
-import top.cyblogs.exception.AlreadyExistsException;
-import top.cyblogs.exception.UrlNotSupportException;
 import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.SupportUrl;
@@ -34,6 +35,9 @@ public class ApplicationService {
             BiliBiliSupport.start(url, download.getCookie());
         } else {
             throw new UrlNotSupportException("您要下载的URL还没有被支持, 请查看支持列表");
+        }
+        if (DownloadList.tempList.size() == 0) {
+            throw new NothingException("啥都没有获取到! 可能你没有购买VIP或者视频，如有其他原因请issues...");
         }
         return DownloadList.tempList;
     }

@@ -14,15 +14,15 @@ import top.cyblogs.utils.BiliBiliUtils;
  */
 public class LiveApi {
 
-    private static final String LIVE_URL_BY_ROOM_ID_URL = "https://api.live.bilibili.com/room/v1/Room/playUrl?cid=%s&qn=10000&platform=web";
-    private static final String ROOM_PLAY_INFO_URL = "https://api.live.bilibili.com/xlive/web-room/v1/index/getRoomPlayInfo?room_id=%s&play_url=1&mask=1&qn=10000&platform=web";
+    private static final String LIVE_URL_BY_ROOM_ID_URL = "https://api.live.bilibili.com/room/v1/Room/playUrl?cid=%s&qn=1024&platform=web";
+    private static final String ROOM_PLAY_INFO_URL = "https://api.live.bilibili.com/xlive/web-room/v1/index/getRoomPlayInfo?room_id=%s&play_url=1&mask=1&qn=1024&platform=web";
     private static final String LIVE_URL_BY_LIVE_ID_URL = "https://live.bilibili.com/%s";
     private static final String LIVE_URL_BY_LIVE_ID_START = "<script>window.__NEPTUNE_IS_MY_WAIFU__=";
     private static final String LIVE_URL_BY_LIVE_ID_END = "</script>";
     private static final String LIVE_USER_INFO_URL = "https://api.live.bilibili.com/xlive/web-ucenter/user/get_user_info";
     private static final String ROUND_PLAY_URL = "https://api.live.bilibili.com/live/getRoundPlayVideo?room_id=%s";
     private static final String INFO_BY_ROOM = "https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom?room_id=%s";
-    private static final String PLAY_URL = "https://api.live.bilibili.com/room/v1/Room/playUrl?cid=%s&qn=1000&platform=web";
+    private static final String PLAY_URL = "https://api.live.bilibili.com/room/v1/Room/playUrl?cid=%s&qn=1024&platform=web";
 
     public static JsonNode getPlayUrl(String roomId) {
         String json = BiliBiliUtils.urlText(String.format(PLAY_URL, roomId));
