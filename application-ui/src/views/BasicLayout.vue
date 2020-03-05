@@ -1,14 +1,18 @@
+<!-- author: CY -->
 <template>
-    <div class="container py-4" id="app">
+    <div class="container">
 
-        <div class="row mt-3">
+        <!--程序标题-->
+        <div class="d-flex justify-content-center align-items-center py-4">
+            <img alt="Logo" src="@/assets/logo.png" style="width: 50%; height: auto;"/>
+        </div>
 
+        <div class="row">
             <!--左侧区域-->
             <div class="col-lg-3 col-md-0" id="left">
                 <!--导航列表-->
                 <NavList/>
             </div>
-
             <!--右侧区域-->
             <div class="col-lg-9 col-md-12" id="right">
                 <!--移动端的导航栏-->
@@ -37,9 +41,10 @@
 </template>
 
 <script>
+
     import NavList from "@/components/NavList";
     import MobileNavList from "@/components/MobileNavList";
-    import {mapActions} from "vuex"
+    import {mapActions} from "vuex";
 
     export default {
         created() {

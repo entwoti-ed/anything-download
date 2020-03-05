@@ -9,6 +9,6 @@ export default () => {
         return x[0] + "=" + encodeURIComponent(btoa(encodeURIComponent(x[1])));
     }).join("&");
 
-    /*传送到Download Anything*/
+    /*传送到Anything Download*/
     window.open(`http://127.0.0.1:10086/#/${query}`);
 }

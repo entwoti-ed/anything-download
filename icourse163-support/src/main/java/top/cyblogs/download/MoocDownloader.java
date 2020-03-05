@@ -2,7 +2,7 @@ package top.cyblogs.download;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.MoocApi;
-import top.cyblogs.data.BaseData;
+import top.cyblogs.data.SettingsData;
 import top.cyblogs.service.HlsVideoService;
 import top.cyblogs.service.NormalDownloadService;
 import top.cyblogs.util.FileUtils;
@@ -48,9 +48,9 @@ public class MoocDownloader {
                     System.out.println(realUrl);
                     String format = hdItem.findValue("format").asText().trim();
                     if ("hls".equals(format)) {
-                        HlsVideoService.download(realUrl, new File(BaseData.path + title + ".mp4"));
+                        HlsVideoService.download(realUrl, new File(SettingsData.path + title + ".mp4"), null);
                     } else if ("flv".equals(format)) {
-                        NormalDownloadService.execDownload(realUrl, new File(BaseData.path + title + ".flv"), null);
+                        NormalDownloadService.download(realUrl, new File(SettingsData.path + title + ".flv"), null, null);
                     }
                 }
 

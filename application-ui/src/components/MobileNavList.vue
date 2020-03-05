@@ -1,35 +1,28 @@
 <template>
     <!--移动端的导航列表-->
     <section class="d-flex" id="navBar" style="justify-content: space-evenly;">
-        <router-link class="py-1" exact
+        <router-link exact
                      exact-active-class="m-nav-active"
                      replace
                      tag="div"
                      to="/start">
             主页
         </router-link>
-        <router-link class="py-1" exact
+        <router-link exact
                      exact-active-class="m-nav-active"
                      replace
                      tag="div"
                      to="/list/downloading">
             下载中
         </router-link>
-        <router-link class="py-1" exact
+        <router-link exact
                      exact-active-class="m-nav-active"
                      replace
                      tag="div"
                      to="/list/finished">
             已完成
         </router-link>
-        <router-link class="py-1" exact
-                     exact-active-class="m-nav-active"
-                     replace
-                     tag="div"
-                     to="/list/trash">
-            垃圾箱
-        </router-link>
-        <router-link class="py-1" exact
+        <router-link exact
                      exact-active-class="m-nav-active"
                      replace
                      tag="div"

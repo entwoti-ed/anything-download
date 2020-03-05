@@ -11,5 +11,5 @@ public class BaseData {
     /**
      * 该软件的名字(不允许修改)
      */
-    public transient static final String APP_NAME = "Download Anything";
+    public transient static final String APP_NAME = "Anything Download";
 }

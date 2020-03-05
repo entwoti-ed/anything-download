@@ -15,60 +15,47 @@
 
                 <!-- 第一行信息 -->
                 <section class="d-flex">
-                    <span :title="item.fileName || '正在获取文件名...'" class="font-weight-bold mr-auto download-title"
+                    <span :title="downloadItem.fileName" class="font-weight-bold mr-auto download-title"
                           v-b-tooltip.hover>
-                        {{item.fileName || "正在获取文件名..."}}
+                        {{downloadItem.fileName}}
                     </span>
                     <div class="text-muted download-status-lg">
-                        {{item.statusFormat || "正在连接..."}}
+                        {{downloadItem.statusFormat}}
                     </div>
                 </section>
 
                 <!-- 第二行信息 -->
                 <section class="d-flex">
                     <div class="mr-auto text-muted">
-                        大小: {{item.totalSize || "--KB"}}
+                        大小: {{downloadItem.totalSize}}
                     </div>
                     <div class="text-muted download-status-sm">
-                        {{item.statusFormat || "正在连接..."}}
+                        {{downloadItem.statusFormat}}
                     </div>
-                    <div :title="item.targetPath || '稍等...'" class="text-muted target-path" v-b-tooltip.hover.bottom>
-                        位置: {{(item.targetPath || "").replace(/(.{8})(.*)(.{12})/, "$1……$3") || "稍等..."}}
+                    <div :title="item.targetPath || downloadItem.targetPath" class="text-muted target-path"
+                         v-b-tooltip.hover.bottom>
+                        位置: {{downloadItem.targetPath}}
                     </div>
                 </section>
 
                 <!-- 第三行信息 -->
                 <section class="d-flex">
                     <div class="mr-auto">
-                        来源: <span class="text-danger">{{item.source || "稍等..."}}</span>
+                        来源: <span class="text-danger">{{downloadItem.source}}</span>
                     </div>
                     <div class="text-muted">
-                        {{item.currentSpeed}}
+                        {{downloadItem.currentSpeed}}
                     </div>
                     <div class="ml-2 text-muted">
-                        {{item.progressFormat}}
+                        {{downloadItem.progressFormat}}
                     </div>
                 </section>
             </div>
-
-            <!-- 下载控制按钮 -->
-            <section class="d-flex justify-content-center align-items-center border-left download-control"
-                     style="width: 8rem;">
-                <div>
-                    <font-awesome-icon icon="play"/>
-                </div>
-                <!-- <div>
-                        暂停按钮
-                    </div> -->
-                <div class="ml-4">
-                    <font-awesome-icon icon="trash"/>
-                </div>
-            </section>
         </div>
         <!-- 进度条 -->
         <div style="background-color: darkgrey">
-            <div :class="item.status === 'DOWNLOADING' ? 'bg-danger' : item.status === 'MERGING' ? 'bg-info' : item.status === 'FINISHED' ? 'bg-success' : ''"
-                 :style="`width: ${isNaN(item.progress) ? 0 : item.progress}%;`"
+            <div :class="downloadItem.status"
+                 :style="`width: ${downloadItem.progress}%;`"
                  style="height: 3px;"></div>
         </div>
     </section>
@@ -82,6 +69,22 @@
             item: {
                 type: [Object],
                 required: true
+            }
+        },
+        computed: {
+            downloadItem() {
+                return {
+                    fileName: this.item.fileName || "文件名获取中...",
+                    statusFormat: this.item.statusFormat || "正在连接...",
+                    totalSize: this.item.totalSize || "--KB",
+                    targetPath: (this.item.targetPath || "").replace(/(.{8})(.*)(.{12})/, "$1……$3") || "获取中...",
+                    source: this.item.source || "获取中...",
+                    currentSpeed: this.item.currentSpeed,
+                    progressFormat: this.item.progressFormat,
+                    progress: isNaN(this.item.progress) ? 0 : this.item.progress,
+                    status: this.item.status === 'DOWNLOADING' ? 'bg-danger' : this.item.status === 'MERGING' ? 'bg-info' : this.item.status === 'FINISHED' ? 'bg-success' : '',
+
+                };
             }
         }
     }

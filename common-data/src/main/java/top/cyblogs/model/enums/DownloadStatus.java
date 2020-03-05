@@ -18,17 +18,12 @@ public enum DownloadStatus {
     DOWNLOADING,
 
     /**
-     * 下载完成
-     */
-    FINISHED,
-
-    /**
-     * 垃圾箱
-     */
-    TRASH,
-
-    /**
      * 合并
      */
-    MERGING
+    MERGING,
+
+    /**
+     * 下载完成
+     */
+    FINISHED
 }

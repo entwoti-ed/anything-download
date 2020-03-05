@@ -1,28 +1,25 @@
 <template>
     <div id="home">
 
-        <!--程序标题-->
-        <div class="d-flex flex-column justify-content-center align-items-center">
-            <h1 class="text-muted text-monospace">Download Anything</h1>
-            <small>理论上可以下载一切的下载器(可以用手机控制)</small>
-            <small>每次启动都是全新的，请一次性下载完</small>
-        </div>
+        <div class="d-flex flex-column justify-content-center align-items-center" style="height: 50vh;">
 
-        <div class="my-3">粘贴链接到下面, 然后点击下载按钮</div>
+            <font-awesome-icon class="text-muted" icon="download" size="7x"/>
 
-        <b-input-group>
-            <b-form-input placeholder="粘贴URL到这里" type="text"/>
-            <b-input-group-append>
-                <b-button variant="outline-secondary">下载</b-button>
-            </b-input-group-append>
-        </b-input-group>
+            <div class="mt-5 my-3">粘贴链接到下面, 然后点击下载按钮</div>
 
-        <div class="text-center mt-3">
-            <a :href="generalScript"
-               class="d-inline text-muted"
-               id="bookMark">
-                通用脚本
-            </a>
+            <b-input-group>
+                <b-form-input placeholder="粘贴URL到这里" type="text"/>
+                <b-input-group-append>
+                    <b-button variant="outline-secondary">下载</b-button>
+                </b-input-group-append>
+            </b-input-group>
+
+            <div class="text-center mt-3">
+                <a :href="generalScript" class="d-inline text-muted" id="bookMark">
+                    通用脚本
+                </a>
+            </div>
+
         </div>
 
         <!--交互弹窗等内容-->
@@ -113,6 +110,7 @@
         },
         data() {
             return {
+                url: null,
                 generalScript: scriptList.general,
                 selectDownload: [],
                 tempDownloadList: [],
