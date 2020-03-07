@@ -4,6 +4,7 @@ package top.cyblogs.utils;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import top.cyblogs.data.BiliBiliData;
+import top.cyblogs.data.HttpData;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,10 +38,18 @@ public class BiliBiliUtils {
     }
 
     /**
+     * BiliBili首页
+     */
+    public static final String HOME_URL = "https://www.bilibili.com/";
+
+    /**
      * 获取URL中的文本
      */
     public static String urlText(String url) {
         HttpRequest request = HttpUtil.createGet(url);
+        request.header("User-Agent", HttpData.USER_AGENT);
+        request.header("Origin", HOME_URL);
+        request.header("Referer", HOME_URL);
         BiliBiliData.header().forEach(request::header);
         return request.execute().body();
     }

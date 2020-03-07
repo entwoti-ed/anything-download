@@ -6,7 +6,7 @@ export default () => {
             serviceType: "HLS",
             url: dataset.playList[0].url,
             title: dataset.title + ".mp4",
-            source: "Tencent",
+            source: "腾讯视频",
             cookie: document.cookie,
             downloadType: "VIDEO"
         }).map(x => {

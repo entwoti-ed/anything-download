@@ -2,7 +2,6 @@ package top.cyblogs.util;
 
 import cn.hutool.core.util.IdUtil;
 
-import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,27 +47,5 @@ public class FileUtils {
             sb.append(matcher.group());
             matchRightFileName(sb, fileName.substring(matcher.end()));
         }
-    }
-
-    /**
-     * 可读性好的文件大小
-     *
-     * @param fileLength 文件大小为 单位B
-     * @return 可读性好的文件的大小（字符串）
-     */
-    public static String fileLength(double fileLength) {
-        // 存储单位
-        String[] units = {"KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB", "BB", "NB", "DB", "CB", "XB"};
-        for (String unit : units) {
-            if (fileLength < 1024) {
-                // 如果文件小于1024
-                return (int) fileLength + "B";
-            }
-            // 如果大于等于1KB
-            if ((fileLength /= 1024) < 1024) {
-                return new DecimalFormat("#.##").format(fileLength) + unit;
-            }
-        }
-        return "0B";
     }
 }

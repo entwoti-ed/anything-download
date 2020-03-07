@@ -1,5 +1,6 @@
 package top.cyblogs.controller.websocket;
 
+import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -8,7 +9,6 @@ import top.cyblogs.data.DownloadList;
 import top.cyblogs.download.DownloadUtils;
 import top.cyblogs.model.dto.StatusDTO;
 import top.cyblogs.output.Aria2cGlobalStat;
-import top.cyblogs.util.FileUtils;
 
 import javax.annotation.Resource;
 
@@ -33,7 +33,7 @@ public class DownloadSocketController {
             return;
         }
         Aria2cGlobalStat aria2cGlobalStat = DownloadUtils.globalStatus();
-        String downloadSpeed = FileUtils.fileLength(aria2cGlobalStat.getDownloadSpeed()) + "/S";
+        String downloadSpeed = FileUtil.readableFileSize(aria2cGlobalStat.getDownloadSpeed()) + "/S";
         messagingTemplate.convertAndSend("/downloadStatus/notice", new StatusDTO(downloadSpeed, DownloadList.list));
     }
 }

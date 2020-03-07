@@ -10,7 +10,7 @@ export default () => {
             serviceType: "HLS",
             url: video.m3u8_url,
             title: title + ".mp4",
-            source: "Youku",
+            source: "优酷视频",
             cookie: document.cookie,
             downloadType: "VIDEO"
         }).map(x => {

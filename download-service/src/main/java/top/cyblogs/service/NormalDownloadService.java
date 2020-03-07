@@ -10,7 +10,6 @@ import top.cyblogs.download.DownloadUtils;
 import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.enums.DownloadStatus;
 import top.cyblogs.output.Aria2cStatus;
-import top.cyblogs.util.FileUtils;
 import top.cyblogs.utils.ServiceUtils;
 
 import java.io.File;
@@ -53,7 +52,7 @@ public class NormalDownloadService {
             downloadStatus.setStatusFormat("文件已存在!");
             downloadStatus.setStatus(DownloadStatus.FINISHED);
             downloadStatus.setCurrentSpeed(null);
-            downloadStatus.setTotalSize(FileUtils.fileLength(targetFile.length()));
+            downloadStatus.setTotalSize(FileUtil.readableFileSize(targetFile.length()));
             downloadStatus.setProgressFormat("100%");
             downloadStatus.setProgress(100D);
             return;
@@ -67,8 +66,8 @@ public class NormalDownloadService {
                 // 开始下载
                 downloadStatus.setStatusFormat("正在下载...");
                 downloadStatus.setStatus(DownloadStatus.DOWNLOADING);
-                downloadStatus.setCurrentSpeed(FileUtils.fileLength(status.getDownloadSpeed()) + "/S");
-                downloadStatus.setTotalSize(FileUtils.fileLength(status.getTotalLength()));
+                downloadStatus.setCurrentSpeed(FileUtil.readableFileSize(status.getDownloadSpeed()) + "/S");
+                downloadStatus.setTotalSize(FileUtil.readableFileSize(status.getTotalLength()));
                 downloadStatus.setProgress((double) status.getCompletedLength() / status.getTotalLength() * 100);
                 downloadStatus.setProgressFormat(ServiceUtils.ratioString(status.getCompletedLength(), status.getTotalLength(), true));
             }

@@ -9,7 +9,6 @@ import top.cyblogs.ffmpeg.listener.FFMpegListener;
 import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.enums.DownloadStatus;
 import top.cyblogs.model.enums.DownloadType;
-import top.cyblogs.util.FileUtils;
 import top.cyblogs.utils.ServiceUtils;
 
 import java.io.File;
@@ -42,7 +41,7 @@ public class HlsVideoService {
         if (SettingsData.skipIfExists && targetFile.exists()) {
             downloadStatus.setStatusFormat("文件已存在!");
             downloadStatus.setStatus(DownloadStatus.FINISHED);
-            downloadStatus.setTotalSize(FileUtils.fileLength(targetFile.length()));
+            downloadStatus.setTotalSize(FileUtil.readableFileSize(targetFile.length()));
             downloadStatus.setProgressFormat("100%");
             downloadStatus.setProgress(100D);
             return;
