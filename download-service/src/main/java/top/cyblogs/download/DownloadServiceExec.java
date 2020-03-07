@@ -1,7 +1,7 @@
 package top.cyblogs.download;
 
-import com.cy.exception.AlreadyExistsException;
 import top.cyblogs.data.SettingsData;
+import top.cyblogs.exception.AlreadyExistsException;
 import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.service.HlsVideoService;
 import top.cyblogs.service.NormalDownloadService;
@@ -24,19 +24,19 @@ public class DownloadServiceExec {
         list.forEach(x -> {
             switch (x.getServiceType()) {
                 case HLS: {
-                    HlsVideoService.download(x.getUrl(), x.getTargetFile(), x.getInitialStatus());
+                    HlsVideoService.download(x.getUrl(), x.getTargetFile(), x.getDownloadStatus());
                     break;
                 }
                 case NORMAL: {
-                    NormalDownloadService.download(x.getUrl(), x.getTargetFile(), x.getHeader(), x.getInitialStatus());
+                    NormalDownloadService.download(x.getUrl(), x.getTargetFile(), x.getHeader(), x.getDownloadStatus());
                     break;
                 }
                 case SEGMENT: {
-                    SegmentVideoService.download(x.getUrls(), x.getTargetFile(), x.getHeader(), x.getInitialStatus());
+                    SegmentVideoService.download(x.getUrls(), x.getTargetFile(), x.getHeader(), x.getDownloadStatus());
                     break;
                 }
                 case SEPERATE: {
-                    SeperateVideoService.download(x.getUrls(), x.getTargetFile(), x.getHeader(), x.getInitialStatus());
+                    SeperateVideoService.download(x.getUrls(), x.getTargetFile(), x.getHeader(), x.getDownloadStatus());
                     break;
                 }
                 default: {

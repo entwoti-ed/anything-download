@@ -17,20 +17,8 @@
         <!--工具类-->
         <dependency>
             <groupId>com.cy</groupId>
-            <artifactId>common-utils</artifactId>
+            <artifactId>common-content</artifactId>
             <version>0.0.1</version>
-        </dependency>
-        <!--公共数据-->
-        <dependency>
-            <groupId>com.cy</groupId>
-            <artifactId>common-data</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cy</groupId>
-            <artifactId>custom-exception</artifactId>
-            <version>0.0.1</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

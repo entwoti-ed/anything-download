@@ -1,11 +1,11 @@
 package top.cyblogs.ffmpeg.exec;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import top.cyblogs.ffmpeg.command.FFMpegCommand;
 import top.cyblogs.ffmpeg.listener.FFMpegListener;
 import top.cyblogs.ffmpeg.utils.ExecUtils;
 import top.cyblogs.ffmpeg.utils.ProgressUtils;
-import top.cyblogs.util.FileUtils;
-import top.cyblogs.util.StringUtils;
 
 import java.io.File;
 import java.util.List;
@@ -35,7 +35,7 @@ public class DownloadM3U8 {
 
     private static void download(String m3U8Url, File out, FFMpegListener listener) {
         // 判断参数是否正确
-        if (!StringUtils.isNotEmpty(m3U8Url) || out == null) {
+        if (!StrUtil.isNotBlank(m3U8Url) || out == null) {
             throw new IllegalArgumentException("下载M3U8时参数异常!");
         }
 
@@ -44,10 +44,10 @@ public class DownloadM3U8 {
         }
 
         // 建立目标文件夹
-        FileUtils.mkdirs(out);
+        FileUtil.mkParentDirs(out);
 
         // 先删除后下载
-        FileUtils.deleteOnExists(out);
+        FileUtil.del(out);
 
         // 获取命令
         List<String> command = FFMpegCommand.downloadM3U8(m3U8Url, out);

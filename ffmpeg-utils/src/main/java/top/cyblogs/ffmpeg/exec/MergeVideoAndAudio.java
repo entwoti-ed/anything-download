@@ -1,10 +1,10 @@
 package top.cyblogs.ffmpeg.exec;
 
+import cn.hutool.core.io.FileUtil;
 import top.cyblogs.ffmpeg.command.FFMpegCommand;
 import top.cyblogs.ffmpeg.listener.FFMpegListener;
 import top.cyblogs.ffmpeg.utils.ExecUtils;
 import top.cyblogs.ffmpeg.utils.ProgressUtils;
-import top.cyblogs.util.FileUtils;
 
 import java.io.File;
 import java.util.List;
@@ -37,18 +37,16 @@ public class MergeVideoAndAudio {
         }
 
         // 建立目标文件夹
-        FileUtils.mkdirs(out);
+        FileUtil.mkParentDirs(out);
 
-        FileUtils.deleteOnExists(out);
+        FileUtil.del(out);
 
         // 获取命令
         List<String> command = FFMpegCommand.mergeVideoAndAudio(video, audio, out);
 
         ProgressUtils progressUtils = new ProgressUtils();
         // 执行命令
-        ExecUtils.exec(command, s -> {
-            progressUtils.watchTimeProgress(s, listener);
-        });
+        ExecUtils.exec(command, s -> progressUtils.watchTimeProgress(s, listener));
 
         try {
             // 给一个延时，不要和FFMpeg进程抢资源

@@ -1,5 +1,6 @@
 package top.cyblogs;
 
+import cn.hutool.core.io.IoUtil;
 import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
 import com.googlecode.jsonrpc4j.JsonRpcMethod;
 import com.googlecode.jsonrpc4j.ProxyUtil;
@@ -11,7 +12,6 @@ import top.cyblogs.start.Aria2cRpcOptions;
 import top.cyblogs.start.Aria2cRpcUtils;
 import top.cyblogs.support.Options;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -85,11 +85,7 @@ public interface Aria2c {
      * @return Base64编码
      */
     static String input2Base64(InputStream inputStream) {
-        try {
-            return Base64.getEncoder().encodeToString(inputStream.readAllBytes());
-        } catch (IOException e) {
-            return "";
-        }
+        return Base64.getEncoder().encodeToString(IoUtil.readBytes(inputStream));
     }
 
     /**

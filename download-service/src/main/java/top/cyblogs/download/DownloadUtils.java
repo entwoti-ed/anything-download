@@ -1,5 +1,6 @@
 package top.cyblogs.download;
 
+import cn.hutool.core.io.FileUtil;
 import top.cyblogs.Aria2c;
 import top.cyblogs.data.PathData;
 import top.cyblogs.input.Aria2cOptions;
@@ -78,7 +79,7 @@ public class DownloadUtils {
         Aria2cOptions options = Aria2cOptions.builder()
                 .header(getHeader(header))
                 // 输出目录
-                .dir(out.getParentFile().getAbsolutePath())
+                .dir(FileUtil.getCanonicalPath(out.getParentFile()))
                 // 输出文件
                 .out(out.getName())
                 .build();
@@ -150,6 +151,6 @@ public class DownloadUtils {
         }
         List<String> headers = new ArrayList<>();
         header.forEach((key, value) -> headers.add(String.format("%s: %s", key, value)));
-        return headers.toArray(String[]::new);
+        return headers.toArray(new String[]{});
     }
 }

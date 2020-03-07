@@ -1,5 +1,6 @@
 package top.cyblogs.download.downloader;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.EpApi;
 import top.cyblogs.data.BiliBiliData;
@@ -10,7 +11,6 @@ import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
 import top.cyblogs.model.enums.ServiceType;
 import top.cyblogs.util.FileUtils;
-import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
@@ -37,7 +37,7 @@ public class EpDownloader {
         String title = epItem.findValue("titleFormat").asText() + " " + epItem.findValue("longTitle").asText();
 
         String badge = epItem.get("badge").asText();
-        if (StringUtils.isNotEmpty(badge)) {
+        if (StrUtil.isNotBlank(badge)) {
             title = "[" + badge + "] " + title;
         }
 
@@ -49,22 +49,24 @@ public class EpDownloader {
         videoStatus.setSource(BiliBiliData.SOURCE);
         videoStatus.setDownloadType(DownloadType.VIDEO);
         File targetFile = new File(SettingsData.path + epTitle + ".mp4");
-        String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
 
         // 如果视频为dash
         JsonNode dash = videoUrl.findValue("dash");
         if (dash != null) {
             String[] dashUrl = getDashUrl(dash);
-            TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEPERATE, null, dashUrl, targetFile, BiliBiliData.header(), videoStatus);
-            DownloadList.tempList.add(tempDownloadItem);
+            DownloadList.tempList.add(
+                    TempDownloadItem.init(dashUrl, targetFile, ServiceType.SEPERATE, BiliBiliData.header(), videoStatus)
+            );
             return;
         }
         // 如果视频为durl
         JsonNode durl = videoUrl.findValue("durl");
         if (durl != null) {
             String[] durlUrl = getDurlUrl(durl);
-            TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEGMENT, null, durlUrl, targetFile, BiliBiliData.header(), videoStatus);
-            DownloadList.tempList.add(tempDownloadItem);
+
+            DownloadList.tempList.add(
+                    TempDownloadItem.init(durlUrl, targetFile, ServiceType.SEGMENT, BiliBiliData.header(), videoStatus)
+            );
         }
     }
 

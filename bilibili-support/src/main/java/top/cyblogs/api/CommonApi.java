@@ -1,7 +1,7 @@
 package top.cyblogs.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import top.cyblogs.util.JsonUtils;
+import top.cyblogs.util.JacksonUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 /**
@@ -27,7 +27,7 @@ public class CommonApi {
      */
     public static JsonNode getUserInfo() {
         String json = BiliBiliUtils.urlText(USER_INFO_URL);
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -38,7 +38,7 @@ public class CommonApi {
      */
     public static JsonNode getVideoDetail(String aid) {
         String json = BiliBiliUtils.urlText(String.format(VIDEO_DETAIL_URL, aid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -49,7 +49,7 @@ public class CommonApi {
      */
     public static JsonNode getVideoTag(String aid) {
         String json = BiliBiliUtils.urlText(String.format(VIDEO_TAG_URL, aid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -61,7 +61,7 @@ public class CommonApi {
      */
     public static JsonNode getVideoDescribe(String aid, String page) {
         String json = BiliBiliUtils.urlText(String.format(VIDEO_DESCRIBE_URL, aid, page));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -80,7 +80,7 @@ public class CommonApi {
      */
     public static JsonNode getUpperInfo(String mid) {
         String json = BiliBiliUtils.urlText(String.format(UPPER_INFO_URL, mid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -90,6 +90,6 @@ public class CommonApi {
      */
     public static JsonNode getDefaultSearch() {
         String json = BiliBiliUtils.urlText(DEFAULT_SEARCH_URL);
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 }

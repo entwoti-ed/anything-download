@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import top.cyblogs.data.SessionData;
-import top.cyblogs.util.JsonUtils;
+import top.cyblogs.util.JacksonUtils;
 import top.cyblogs.utils.MoocUtils;
 
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class MoocApi {
         String videoResourceUrl = String.format("https://vod.study.163.com/eds/api/v1/vod/video?videoId=%s&signature=%s&clientType=1", videoId, signature);
         Connection videoUrl = Jsoup.connect(videoResourceUrl).ignoreContentType(true);
         String json = videoUrl.get().text();
-        JsonNode videoJson = JsonUtils.toJsonNode(json);
+        JsonNode videoJson = JacksonUtils.toJsonNode(json);
         JsonNode videos = videoJson.findValue("videos");
         return videos.get(videos.size() - 1);
 
@@ -70,7 +70,7 @@ public class MoocApi {
         connect.data("contentType", "1");
 
         String text = connect.post().text();
-        JsonNode jsonNode = JsonUtils.toJsonNode(text);
+        JsonNode jsonNode = JacksonUtils.toJsonNode(text);
         System.out.println(jsonNode);
         return jsonNode.findValue("videoSignDto");
     }

@@ -10,7 +10,6 @@ import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
 import top.cyblogs.model.enums.ServiceType;
 import top.cyblogs.util.FileUtils;
-import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
@@ -41,12 +40,14 @@ public class LiveDownloader {
         videoStatus.setDownloadType(DownloadType.VIDEO);
 
         File targetFile = new File(SettingsData.path + roomTitle + ".flv");
-        String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
+
         if (liveStatus == 1) {
             // 获取下载地址
             JsonNode roomPlayInfo = LiveApi.getPlayUrl(playId);
             String liveUrl = roomPlayInfo.findValue("data").findValue("durl").get(0).findValue("url").asText();
-            DownloadList.tempList.add(new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, liveUrl, null, targetFile, BiliBiliData.header(), videoStatus));
+            DownloadList.tempList.add(
+                    TempDownloadItem.init(liveUrl, targetFile, ServiceType.NORMAL, BiliBiliData.header(), videoStatus)
+            );
         } else if (liveStatus == 2) {
             // 轮播
             System.err.println("轮播中");

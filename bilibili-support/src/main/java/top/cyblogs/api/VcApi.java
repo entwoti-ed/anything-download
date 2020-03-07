@@ -1,7 +1,7 @@
 package top.cyblogs.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import top.cyblogs.util.JsonUtils;
+import top.cyblogs.util.JacksonUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 /**
@@ -24,7 +24,7 @@ public class VcApi {
      */
     public static JsonNode getPlayDetail(String videoId) {
         String json = BiliBiliUtils.urlText(String.format(PLAY_DETAIL_URL, videoId));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -34,6 +34,6 @@ public class VcApi {
      */
     public static JsonNode getRecommendUrl() {
         String json = BiliBiliUtils.urlText(RECOMMEND_URL);
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 }

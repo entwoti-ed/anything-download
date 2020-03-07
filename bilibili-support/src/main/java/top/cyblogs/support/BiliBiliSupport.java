@@ -1,12 +1,12 @@
 package top.cyblogs.support;
 
-import com.cy.exception.ForbiddenException;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.CommonApi;
 import top.cyblogs.data.BiliBiliData;
 import top.cyblogs.data.LoginSession;
 import top.cyblogs.download.downloader.*;
 import top.cyblogs.download.enums.DownloadType;
+import top.cyblogs.exception.ForbiddenException;
 
 /**
  * 下载列表服务，根据用户输入的URL获取下载列表

@@ -1,8 +1,8 @@
 package top.cyblogs.api;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
-import top.cyblogs.util.JsonUtils;
-import top.cyblogs.util.StringUtils;
+import top.cyblogs.util.JacksonUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 /**
@@ -26,7 +26,7 @@ public class LiveApi {
 
     public static JsonNode getPlayUrl(String roomId) {
         String json = BiliBiliUtils.urlText(String.format(PLAY_URL, roomId));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -37,7 +37,7 @@ public class LiveApi {
      */
     public static JsonNode getLiveUrlByRoomId(String cid) {
         String json = BiliBiliUtils.urlText(String.format(LIVE_URL_BY_ROOM_ID_URL, cid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -48,7 +48,7 @@ public class LiveApi {
      */
     public static JsonNode getRoomPlayInfo(String roomId) {
         String json = BiliBiliUtils.urlText(String.format(ROOM_PLAY_INFO_URL, roomId));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -59,8 +59,8 @@ public class LiveApi {
      */
     public static JsonNode getLiveUrlByLiveId(String liveId) {
         String html = BiliBiliUtils.urlText(String.format(LIVE_URL_BY_LIVE_ID_URL, liveId));
-        String json = StringUtils.subString(html, LIVE_URL_BY_LIVE_ID_START, LIVE_URL_BY_LIVE_ID_END);
-        return JsonUtils.toJsonNode(json);
+        String json = StrUtil.subBetween(html, LIVE_URL_BY_LIVE_ID_START, LIVE_URL_BY_LIVE_ID_END);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -70,7 +70,7 @@ public class LiveApi {
      */
     public static JsonNode getLiveUserInfo() {
         String json = BiliBiliUtils.urlText(LIVE_USER_INFO_URL);
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -78,7 +78,7 @@ public class LiveApi {
      */
     public static JsonNode getRoundPlayUrl(String roomId) {
         String json = BiliBiliUtils.urlText(String.format(ROUND_PLAY_URL, roomId));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -88,6 +88,6 @@ public class LiveApi {
      */
     public static JsonNode getInfoByRoom(String roomId) {
         String json = BiliBiliUtils.urlText(String.format(INFO_BY_ROOM, roomId));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 }

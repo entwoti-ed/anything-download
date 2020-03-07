@@ -1,5 +1,7 @@
 package top.cyblogs.service;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.crypto.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.data.BaseData;
 import top.cyblogs.data.PathData;
@@ -12,7 +14,6 @@ import top.cyblogs.model.enums.DownloadStatus;
 import top.cyblogs.output.Aria2cStatus;
 import top.cyblogs.support.DownloadTaskStatus;
 import top.cyblogs.util.FileUtils;
-import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.ServiceUtils;
 
 import java.io.File;
@@ -45,12 +46,12 @@ class TempDownloadService {
         String name = targetFile.getName();
         int lastIndexOf = name.lastIndexOf(".");
         downloadStatus.setFileName(lastIndexOf == -1 ? name : name.substring(0, lastIndexOf));
-        downloadStatus.setTargetPath(targetFile.getAbsolutePath());
+        downloadStatus.setTargetPath(FileUtil.getCanonicalPath(targetFile));
         downloadStatus.setStatus(DownloadStatus.WAITING);
         downloadStatus.setStatusFormat("等待下载...");
         downloadStatus.setProgressFormat("0%");
         downloadStatus.setProgress(0D);
-        downloadStatus.setDownloadId(StringUtils.md5(targetFile.getAbsolutePath()));
+        downloadStatus.setDownloadId(SecureUtil.md5(FileUtil.getCanonicalPath(targetFile)));
         ServiceUtils.addToList(downloadStatus);
 
         // 跳过已经存在
@@ -76,9 +77,9 @@ class TempDownloadService {
         for (int i = 0; i < urls.length; i++) {
 
             File tempFile = new File(PathData.TEMP_FILE_PATH
-                    + StringUtils.md5(urls[i].split("\\?")[0]) + ".m4s");
+                    + SecureUtil.md5(urls[i].split("\\?")[0]) + ".m4s");
 
-            FileUtils.mkdirs(tempFile);
+            FileUtil.mkParentDirs(tempFile);
 
             tempFiles.add(tempFile);
 

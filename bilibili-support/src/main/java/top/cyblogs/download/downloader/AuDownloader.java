@@ -1,5 +1,6 @@
 package top.cyblogs.download.downloader;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.AuApi;
 import top.cyblogs.data.BiliBiliData;
@@ -9,7 +10,6 @@ import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
 import top.cyblogs.model.enums.ServiceType;
-import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
@@ -22,7 +22,7 @@ public class AuDownloader {
         JsonNode detailData = musicDetail.findValue("data");
         String title = detailData.findValue("title").asText();
         String author = detailData.findValue("author").asText();
-        if (StringUtils.isNotEmpty(author)) {
+        if (StrUtil.isNotBlank(author)) {
             title = author + " - " + title;
         }
         long aid = detailData.findValue("aid").asLong();
@@ -36,8 +36,9 @@ public class AuDownloader {
         mp3Status.setSource(BiliBiliData.SOURCE);
         mp3Status.setDownloadType(DownloadType.AUDIO);
         File targetFile = new File(SettingsData.path + title + ".mp3");
-        String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
-        TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, downloadUrl, null, targetFile, BiliBiliData.header(), mp3Status);
-        DownloadList.tempList.add(tempDownloadItem);
+
+        DownloadList.tempList.add(
+                TempDownloadItem.init(downloadUrl, targetFile, ServiceType.NORMAL, BiliBiliData.header(), mp3Status)
+        );
     }
 }

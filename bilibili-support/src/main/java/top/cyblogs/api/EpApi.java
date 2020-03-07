@@ -1,8 +1,8 @@
 package top.cyblogs.api;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
-import top.cyblogs.util.JsonUtils;
-import top.cyblogs.util.StringUtils;
+import top.cyblogs.util.JacksonUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 /**
@@ -28,7 +28,7 @@ public class EpApi {
      */
     public static JsonNode getVideoUrl(String avid, String cid, String epid) {
         String json = BiliBiliUtils.urlText(String.format(VIDEO_URL, avid, cid, epid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -39,7 +39,7 @@ public class EpApi {
      */
     public static JsonNode getEpInitialState(String epid) {
         String html = BiliBiliUtils.urlText(String.format(EP_INITIAL_STATE_URL, epid));
-        String json = StringUtils.subString(html, EP_INITIAL_STATE_START, EP_INITIAL_STATE_END);
-        return JsonUtils.toJsonNode(json);
+        String json = StrUtil.subBetween(html, EP_INITIAL_STATE_START, EP_INITIAL_STATE_END);
+        return JacksonUtils.toJsonNode(json);
     }
 }

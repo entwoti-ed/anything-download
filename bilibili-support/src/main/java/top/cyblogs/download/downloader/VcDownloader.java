@@ -10,7 +10,6 @@ import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
 import top.cyblogs.model.enums.ServiceType;
 import top.cyblogs.util.FileUtils;
-import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
@@ -29,8 +28,8 @@ public class VcDownloader {
         videoStatus.setSource(BiliBiliData.SOURCE);
         videoStatus.setDownloadType(DownloadType.VIDEO);
         File targetFile = new File(SettingsData.path + title + ".mp4");
-        String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
-        TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.SEGMENT, videoPlayUrl, null, targetFile, BiliBiliData.header(), videoStatus);
-        DownloadList.tempList.add(tempDownloadItem);
+        DownloadList.tempList.add(
+                TempDownloadItem.init(videoPlayUrl, targetFile, ServiceType.SEGMENT, BiliBiliData.header(), videoStatus)
+        );
     }
 }

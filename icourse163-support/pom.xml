@@ -18,7 +18,7 @@
         <!--工具类-->
         <dependency>
             <groupId>com.cy</groupId>
-            <artifactId>common-utils</artifactId>
+            <artifactId>common-content</artifactId>
             <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
@@ -26,13 +26,6 @@
         <dependency>
             <groupId>com.cy</groupId>
             <artifactId>download-service</artifactId>
-            <version>0.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <!--公共数据-->
-        <dependency>
-            <groupId>com.cy</groupId>
-            <artifactId>common-data</artifactId>
             <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>

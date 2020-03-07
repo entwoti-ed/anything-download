@@ -1,10 +1,10 @@
 package top.cyblogs.ffmpeg.exec;
 
+import cn.hutool.core.io.FileUtil;
 import top.cyblogs.ffmpeg.command.FFMpegCommand;
 import top.cyblogs.ffmpeg.listener.FFMpegListener;
 import top.cyblogs.ffmpeg.utils.ExecUtils;
 import top.cyblogs.ffmpeg.utils.ProgressUtils;
-import top.cyblogs.util.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -83,24 +83,23 @@ public class Convert2Ts {
         }
 
         // 输入的文件本来就是ts后缀的
-        String videoAbsolutePath = video.getAbsolutePath();
-        String extensionName = videoAbsolutePath.substring(video.getAbsolutePath().lastIndexOf("."));
+        String extensionName = FileUtil.extName(video);
         if (HLS_EXTENSION_NAME.equalsIgnoreCase(extensionName)) {
             return video;
         }
 
         // 替换输出文件后缀名为ts
-        String outAbsolutePath = out.getAbsolutePath();
-        File newFile = new File(outAbsolutePath.substring(0, outAbsolutePath.lastIndexOf(".")) + HLS_EXTENSION_NAME);
+        String outCanonicalPath = FileUtil.getCanonicalPath(out);
+        File newFile = new File(outCanonicalPath.substring(0, outCanonicalPath.lastIndexOf(".")) + HLS_EXTENSION_NAME);
         if (listener != null) {
             listener.start();
         }
 
         // 建立目标文件夹
-        FileUtils.mkdirs(newFile);
+        FileUtil.mkParentDirs(newFile);
 
         // 存在就删除
-        FileUtils.deleteOnExists(newFile);
+        FileUtil.del(newFile);
 
         // 获取命令
         List<String> command = FFMpegCommand.convert2Ts(video, newFile);

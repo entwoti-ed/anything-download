@@ -1,12 +1,12 @@
 package top.cyblogs.service;
 
-import com.cy.exception.AlreadyExistsException;
-import com.cy.exception.NothingException;
-import com.cy.exception.UrlNotSupportException;
 import org.springframework.stereotype.Service;
 import top.cyblogs.data.DownloadList;
 import top.cyblogs.data.SettingsData;
 import top.cyblogs.download.DownloadServiceExec;
+import top.cyblogs.exception.AlreadyExistsException;
+import top.cyblogs.exception.NothingException;
+import top.cyblogs.exception.UrlNotSupportException;
 import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.SupportUrl;
@@ -16,6 +16,7 @@ import top.cyblogs.support.BiliBiliSupport;
 import top.cyblogs.util.FileUtils;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -55,7 +56,8 @@ public class ApplicationService {
         File targetFile = new File(SettingsData.path + FileUtils.getPrettyFileName(normalDownload.getTitle()));
         DownloadItem downloadStatus = new DownloadItem().setSource(normalDownload.getSource())
                 .setDownloadType(normalDownload.getDownloadType());
-        Map<String, String> header = Map.of("Cookie", normalDownload.getCookie());
+        Map<String, String> header = new HashMap<>();
+        header.put("Cookie", normalDownload.getCookie());
         switch (normalDownload.getServiceType()) {
             case HLS: {
                 HlsVideoService.download(normalDownload.getUrl(), targetFile, downloadStatus);

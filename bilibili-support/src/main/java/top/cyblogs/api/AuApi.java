@@ -1,7 +1,7 @@
 package top.cyblogs.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import top.cyblogs.util.JsonUtils;
+import top.cyblogs.util.JacksonUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 /**
@@ -27,7 +27,7 @@ public class AuApi {
      */
     public static JsonNode getMusicDetail(String sid) {
         String json = BiliBiliUtils.urlText(String.format(MUSIC_DETAIL_URL, sid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -38,7 +38,7 @@ public class AuApi {
      */
     public static JsonNode getSimilarMusic(String sid) {
         String json = BiliBiliUtils.urlText(String.format(SIMILAR_MUSIC_URL, sid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -49,7 +49,7 @@ public class AuApi {
      */
     public static JsonNode getMusicUrl(String sid) {
         String json = BiliBiliUtils.urlText(String.format(MUSIC_URL, sid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -60,7 +60,7 @@ public class AuApi {
      */
     public static JsonNode getUpperHotMusic(String uid) {
         String json = BiliBiliUtils.urlText(String.format(UPPER_HOT_MUSIC_URL, uid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -71,6 +71,6 @@ public class AuApi {
      */
     public static JsonNode getUpperBaseInfo(String uid) {
         String json = BiliBiliUtils.urlText(String.format(UPPER_BASE_INFO, uid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 }

@@ -1,7 +1,7 @@
 package top.cyblogs.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import top.cyblogs.util.JsonUtils;
+import top.cyblogs.util.JacksonUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 /**
@@ -26,7 +26,7 @@ public class AmApi {
      */
     public static JsonNode getAlbumInfo(String sid) {
         String json = BiliBiliUtils.urlText(String.format(ALBUM_INFO_URL, sid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -37,7 +37,7 @@ public class AmApi {
      */
     public static JsonNode getAlbumList(String sid) {
         String json = BiliBiliUtils.urlText(String.format(ALBUM_LIST_URL, sid));
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 
     /**
@@ -45,6 +45,6 @@ public class AmApi {
      */
     public static JsonNode getHotAlbumList() {
         String json = BiliBiliUtils.urlText(HOT_ALBUM_LIST_URL);
-        return JsonUtils.toJsonNode(json);
+        return JacksonUtils.toJsonNode(json);
     }
 }

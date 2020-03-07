@@ -1,8 +1,10 @@
 package top.cyblogs.ffmpeg.command;
 
+import cn.hutool.core.io.FileUtil;
 import top.cyblogs.data.PathData;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,19 +18,25 @@ public class FFMpegCommand {
     /**
      * FFMpeg的路径
      */
-    private static final String FFMPEG = PathData.FFMPEG.getAbsolutePath();
+    private static final String FFMPEG = FileUtil.getCanonicalPath(PathData.FFMPEG);
 
     /**
      * 使用分离器文件合并视频的命令
      */
     public static List<String> mergeVideo(File seperator, File out) {
-        return List.of(
-                String.format("\"%s\"", FFMPEG),
-                "-f", "concat", "-safe", "0", "-i",
-                String.format("\"%s\"", seperator.getAbsoluteFile()),
-                "-c", "copy", "-y",
-                String.format("\"%s\"", out.getAbsoluteFile())
-        );
+        ArrayList<String> command = new ArrayList<>();
+        command.add(String.format("\"%s\"", FFMPEG));
+        command.add("-f");
+        command.add("concat");
+        command.add("-safe");
+        command.add("0");
+        command.add("-i");
+        command.add(String.format("\"%s\"", FileUtil.getCanonicalPath(seperator)));
+        command.add("-c");
+        command.add("copy");
+        command.add("-y");
+        command.add(String.format("\"%s\"", FileUtil.getCanonicalPath(out)));
+        return command;
     }
 
     /**
@@ -40,14 +48,24 @@ public class FFMpegCommand {
      * @return 命令
      */
     public static List<String> mergeVideoAndAudio(File video, File audio, File out) {
-        return List.of(
-                String.format("\"%s\"", FFMPEG),
-                "-i", String.format("\"%s\"", video.getAbsolutePath()),
-                "-i", String.format("\"%s\"", audio.getAbsolutePath()),
-                "-c:v", "copy", "-c:a", "aac", "-strict",
-                "experimental", "-map", "0:v:0?", "-map", "1:a:0?",
-                String.format("\"%s\"", out.getAbsolutePath())
-        );
+        ArrayList<String> command = new ArrayList<>();
+        command.add(String.format("\"%s\"", FFMPEG));
+        command.add("-i");
+        command.add(String.format("\"%s\"", FileUtil.getCanonicalPath(video)));
+        command.add("-i");
+        command.add(String.format("\"%s\"", FileUtil.getCanonicalPath(audio)));
+        command.add("-c:v");
+        command.add("copy");
+        command.add("-c:a");
+        command.add("aac");
+        command.add("-strict");
+        command.add("experimental");
+        command.add("-map");
+        command.add("0:v:0?");
+        command.add("-map");
+        command.add("1:a:0?");
+        command.add(String.format("\"%s\"", FileUtil.getCanonicalPath(out)));
+        return command;
     }
 
     /**
@@ -56,14 +74,18 @@ public class FFMpegCommand {
      * @return 命令
      */
     public static List<String> downloadM3U8(String m3U8Url, File out) {
-
-        return List.of(
-                String.format("\"%s\"", FFMPEG),
-                "-allowed_extensions", "ALL", "-protocol_whitelist",
-                "\"file,http,https,rtp,udp,tcp,tls,crypto\"",
-                "-i", String.format("\"%s\"", m3U8Url), "-c",
-                "copy", String.format("\"%s\"", out.getAbsolutePath())
-        );
+        ArrayList<String> command = new ArrayList<>();
+        command.add(String.format("\"%s\"", FFMPEG));
+        command.add("-allowed_extensions");
+        command.add("ALL");
+        command.add("-protocol_whitelist");
+        command.add("\"file,http,https,rtp,udp,tcp,tls,crypto\"");
+        command.add("-i");
+        command.add(String.format("\"%s\"", m3U8Url));
+        command.add("-c");
+        command.add("copy");
+        command.add(String.format("\"%s\"", FileUtil.getCanonicalPath(out)));
+        return command;
     }
 
     /**
@@ -74,15 +96,19 @@ public class FFMpegCommand {
     public static List<String> mergeTs(List<File> videos, File out) {
 
         String videosJoin = videos.stream()
-                .map(File::getAbsolutePath)
+                .map(FileUtil::getCanonicalPath)
                 .collect(Collectors.joining("|"));
 
-        return List.of(
-                String.format("\"%s\"", FFMPEG), "-i",
-                String.format("\"concat:%s\"", videosJoin),
-                "-c", "copy", "-bsf:a", "aac_adtstoasc",
-                String.format("\"%s\"", out.getAbsolutePath())
-        );
+        ArrayList<String> command = new ArrayList<>();
+        command.add(String.format("\"%s\"", FFMPEG));
+        command.add("-i");
+        command.add(String.format("\"concat:%s\"", videosJoin));
+        command.add("-c");
+        command.add("copy");
+        command.add("-bsf:a");
+        command.add("aac_adtstoasc");
+        command.add(String.format("\"%s\"", FileUtil.getCanonicalPath(out)));
+        return command;
     }
 
     /**
@@ -93,14 +119,20 @@ public class FFMpegCommand {
     public static List<String> convert2Ts(File video, File out) {
 
         // 全部替换成.ts后缀
-        String path = out.getAbsolutePath();
+        String path = FileUtil.getCanonicalPath(out);
         String lastPath = path.substring(0, path.lastIndexOf(".")) + ".ts";
 
-        return List.of(
-                String.format("\"%s\"", FFMPEG),
-                "-i", String.format("\"%s\"", video.getAbsolutePath()),
-                "-vcodec", "copy", "-acodec", "copy", "-vbsf", "h264_mp4toannexb",
-                String.format("\"%s\"", lastPath)
-        );
+        ArrayList<String> command = new ArrayList<>();
+        command.add(String.format("\"%s\"", FFMPEG));
+        command.add("-i");
+        command.add(String.format("\"%s\"", FileUtil.getCanonicalPath(video)));
+        command.add("-vcodec");
+        command.add("copy");
+        command.add("-acodec");
+        command.add("copy");
+        command.add("-vbsf");
+        command.add("h264_mp4toannexb");
+        command.add(String.format("\"%s\"", lastPath));
+        return command;
     }
 }

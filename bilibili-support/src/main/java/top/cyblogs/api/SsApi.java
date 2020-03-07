@@ -1,8 +1,8 @@
 package top.cyblogs.api;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
-import top.cyblogs.util.JsonUtils;
-import top.cyblogs.util.StringUtils;
+import top.cyblogs.util.JacksonUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 /**
@@ -27,7 +27,7 @@ public class SsApi {
      */
     public static JsonNode getSsInitialState(String ssid) {
         String html = BiliBiliUtils.urlText(String.format(SS_INITIAL_STATE_URL, ssid));
-        String json = StringUtils.subString(html, SS_INITIAL_STATE_START, SS_INITIAL_STATE_END);
-        return JsonUtils.toJsonNode(json);
+        String json = StrUtil.subBetween(html, SS_INITIAL_STATE_START, SS_INITIAL_STATE_END);
+        return JacksonUtils.toJsonNode(json);
     }
 }

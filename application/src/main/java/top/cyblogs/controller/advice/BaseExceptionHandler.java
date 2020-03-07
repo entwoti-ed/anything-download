@@ -1,10 +1,10 @@
 package top.cyblogs.controller.advice;
 
-import com.cy.exception.AbstractResultException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import top.cyblogs.exception.AbstractResultException;
 import top.cyblogs.model.response.BaseResponse;
 
 /**

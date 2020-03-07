@@ -8,8 +8,7 @@
     <modules>
         <module>jaria2c-rpc</module>
         <module>application</module>
-        <module>common-utils</module>
-        <module>common-data</module>
+        <module>common-content</module>
         <module>download-service</module>
         <module>ffmpeg-utils</module>
         <module>bilibili-support</module>
@@ -18,7 +17,6 @@
         <module>51cto-support</module>
         <module>tencent-support</module>
         <module>chinahadoop-support</module>
-        <module>custom-exception</module>
     </modules>
 
     <parent>
@@ -35,8 +33,7 @@
     <description>可见即可得，一键就下载</description>
 
     <properties>
-        <!--不换了，就用JDK11吧-->
-        <java.version>11</java.version>
+        <java.version>8</java.version>
     </properties>
 
     <!--全局的包，直接导入，因为项目中只有一个模块是SpringBoot模块-->
@@ -59,13 +56,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
-
-        <!-- Hutool -->
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.1.5</version>
         </dependency>
 
         <!--lombok-->

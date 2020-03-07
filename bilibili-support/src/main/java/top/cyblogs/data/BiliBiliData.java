@@ -1,5 +1,6 @@
 package top.cyblogs.data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,9 +21,13 @@ public class BiliBiliData {
     public static String cookie = "";
 
     public static Map<String, String> header() {
-        return Map.of("User-Agent", HttpData.USER_AGENT,
-                "Origin", HOME_URL,
-                "Referer", HOME_URL,
-                "Cookie", cookie);
+        HashMap<String, String> header = new HashMap<>();
+        header.put("User-Agent", HttpData.USER_AGENT);
+        header.put("Origin", HOME_URL);
+        header.put("Referer", HOME_URL);
+        header.put("Cookie", cookie);
+        return header;
+
+
     }
 }

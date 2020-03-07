@@ -1,5 +1,6 @@
 package top.cyblogs.download.downloader;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.AmApi;
 import top.cyblogs.api.AuApi;
@@ -11,7 +12,6 @@ import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
 import top.cyblogs.model.enums.ServiceType;
 import top.cyblogs.util.FileUtils;
-import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
@@ -35,7 +35,7 @@ public class AmDownloader {
 
 
             String filePath = FileUtils.getPrettyFileName(albumTitle) + File.separator
-                    + FileUtils.getPrettyFileName(author + (StringUtils.isNotEmpty(author) ? " - " : "") + title);
+                    + FileUtils.getPrettyFileName(author + (StrUtil.isNotBlank(author) ? " - " : "") + title);
 
             JsonNode musicUrl = AuApi.getMusicUrl(x.findValue("id").asText());
             String music = musicUrl.findValue("data").findValue("cdns").get(0).asText();
@@ -44,20 +44,19 @@ public class AmDownloader {
             mp3Status.setSource(BiliBiliData.SOURCE);
             mp3Status.setDownloadType(DownloadType.AUDIO);
             File targetFile = new File(SettingsData.path + filePath + ".mp3");
-            String downloadId = StringUtils.md5(targetFile.getAbsolutePath());
-            TempDownloadItem tempDownloadItem = new TempDownloadItem(downloadId, targetFile.getName(), ServiceType.NORMAL, music, null, targetFile, BiliBiliData.header(), mp3Status);
-            DownloadList.tempList.add(tempDownloadItem);
 
-            if (StringUtils.isNotEmpty(lyric)) {
+            DownloadList.tempList.add(
+                    TempDownloadItem.init(music, targetFile, ServiceType.NORMAL, BiliBiliData.header(), mp3Status)
+            );
 
-
+            if (StrUtil.isNotBlank(lyric)) {
                 DownloadItem lrcStatus = new DownloadItem();
                 lrcStatus.setSource(BiliBiliData.SOURCE);
                 lrcStatus.setDownloadType(DownloadType.LRC);
                 File lrcTargetFile = new File(SettingsData.path + filePath + ".lrc");
-                String lrcDownloadId = StringUtils.md5(lrcTargetFile.getAbsolutePath());
-                TempDownloadItem lrcTempDownloadItem = new TempDownloadItem(lrcDownloadId, lrcTargetFile.getName(), ServiceType.NORMAL, lyric, null, lrcTargetFile, BiliBiliData.header(), lrcStatus);
-                DownloadList.tempList.add(lrcTempDownloadItem);
+                DownloadList.tempList.add(
+                        TempDownloadItem.init(lyric, lrcTargetFile, ServiceType.NORMAL, BiliBiliData.header(), lrcStatus)
+                );
             }
 
             long aid = x.findValue("aid").asLong();

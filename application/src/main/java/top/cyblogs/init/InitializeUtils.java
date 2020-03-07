@@ -1,5 +1,7 @@
 package top.cyblogs.init;
 
+import cn.hutool.core.io.IoUtil;
+
 import java.io.*;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -42,7 +44,7 @@ public class InitializeUtils {
             ZipEntry zipEntry;
             while ((zipEntry = input.getNextEntry()) != null) {
                 if (zipEntry.getName().contains(out.getName())) {
-                    input.transferTo(output);
+                    IoUtil.copy(input, output);
                     return;
                 }
             }

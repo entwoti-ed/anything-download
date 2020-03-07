@@ -1,8 +1,9 @@
 package top.cyblogs.utils;
 
-import com.cy.exception.AlreadyExistsException;
+import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.data.DownloadList;
+import top.cyblogs.exception.AlreadyExistsException;
 import top.cyblogs.model.DownloadItem;
 
 import java.io.File;
@@ -44,7 +45,7 @@ public class ServiceUtils {
         ScheduledExecutorService scheduledThreadPool = Executors.newScheduledThreadPool(1);
         scheduledThreadPool.scheduleAtFixedRate(() -> {
             // 当前状态是还没有完成，并且Aria2文件都消失了，说明真正的下载完了
-            if (!isFinished.get() && files.stream().noneMatch(x -> new File(x.getAbsolutePath() + ".aria2").exists())) {
+            if (!isFinished.get() && files.stream().noneMatch(x -> new File(FileUtil.getCanonicalPath(x) + ".aria2").exists())) {
                 isFinished.set(true);
                 if (consumer != null) {
                     consumer.accept(files);
@@ -63,6 +64,6 @@ public class ServiceUtils {
         if (DownloadList.list.stream().anyMatch(x -> x.getDownloadId().equals(downloadStatus.getDownloadId()))) {
             throw new AlreadyExistsException("重复添加了...");
         }
-        DownloadList.list.add(0, downloadStatus);
+        DownloadList.list.add(downloadStatus);
     }
 }

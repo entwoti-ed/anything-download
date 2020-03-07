@@ -15,8 +15,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -338,16 +338,15 @@ public class AppTest {
     @Test
     public void testMultiCall() {
 
+        ArrayList<Object> params = new ArrayList<>();
+        params.add(token);
+        params.add(new String[]{"https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-20200209-5ad1c1a-win64-static.zip"});
+        params.add(Options.empty());
+        params.add(Integer.MAX_VALUE);
+
         Aria2cCall call = Aria2cCall.builder()
                 .methodName(Aria2c.ADD_URI)
-                .params(
-                        List.of(
-                                token,
-                                new String[]{"https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-20200209-5ad1c1a-win64-static.zip"},
-                                Options.empty(),
-                                Integer.MAX_VALUE
-                        )
-                ).build();
+                .params(params).build();
 
         Object[] multiCall = aria2c.multicall(call, call);
         log.debug("返回: {}", Arrays.toString(multiCall));

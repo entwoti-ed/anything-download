@@ -1,15 +1,15 @@
 package top.cyblogs.start;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.exception.NoAvailablePortException;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -49,8 +49,6 @@ public class Aria2cRpcUtils {
                     process.destroy(); /*销毁Aria2*/
                     service.shutdownNow(); /*关闭线程池*/
                 }));
-                // 执行Aria2
-                process.getInputStream().transferTo(OutputStream.nullOutputStream());
             } catch (IOException ignored) {
             }
         });
@@ -71,10 +69,10 @@ public class Aria2cRpcUtils {
         // rpc参数
         List<String> cmd = Aria2cRpcOptions.getInstance().setEnableRpc(true)
                 .setRpcListenPort(getAvailablePort())
-                .setRpcSecret(UUID.randomUUID().toString()).options();
+                .setRpcSecret(IdUtil.fastSimpleUUID()).options();
 
         // 构建命令
-        cmd.add(0, aria2cFile.getAbsolutePath());
+        cmd.add(0, FileUtil.getCanonicalPath(aria2cFile));
 
         // 添加用户自定义的附加参数
         if (options != null) {

@@ -1,11 +1,11 @@
 package top.cyblogs.service;
 
+import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.ffmpeg.exec.MergeVideo;
 import top.cyblogs.ffmpeg.listener.FFMpegListener;
 import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.enums.DownloadStatus;
-import top.cyblogs.util.FileUtils;
 import top.cyblogs.utils.ServiceUtils;
 
 import java.io.File;
@@ -59,7 +59,7 @@ public class SegmentVideoService {
                     downloadStatus.setProgress(100D);
                     downloadStatus.setProgressFormat("100%");
                     // 合并完成后删除下载的临时文件
-                    segmentFiles.forEach(FileUtils::deleteOnExists);
+                    segmentFiles.forEach(FileUtil::del);
                 }
             });
         });

@@ -1,5 +1,7 @@
 package top.cyblogs.service;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.crypto.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.data.BaseData;
 import top.cyblogs.data.SettingsData;
@@ -9,7 +11,6 @@ import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.enums.DownloadStatus;
 import top.cyblogs.output.Aria2cStatus;
 import top.cyblogs.util.FileUtils;
-import top.cyblogs.util.StringUtils;
 import top.cyblogs.utils.ServiceUtils;
 
 import java.io.File;
@@ -37,11 +38,11 @@ public class NormalDownloadService {
      */
     private void execDownload(String url, File targetFile, Map<String, String> header, DownloadItem downloadStatus) {
 
-        downloadStatus.setDownloadId(StringUtils.md5(targetFile.getAbsolutePath()));
+        downloadStatus.setDownloadId(SecureUtil.md5(FileUtil.getCanonicalPath(targetFile)));
         String name = targetFile.getName();
         int lastIndexOf = name.lastIndexOf(".");
         downloadStatus.setFileName(lastIndexOf == -1 ? name : name.substring(0, lastIndexOf));
-        downloadStatus.setTargetPath(targetFile.getAbsolutePath());
+        downloadStatus.setTargetPath(FileUtil.getCanonicalPath(targetFile));
         downloadStatus.setStatus(DownloadStatus.WAITING);
         downloadStatus.setStatusFormat("等待下载...");
         downloadStatus.setProgressFormat("0%");
@@ -58,7 +59,7 @@ public class NormalDownloadService {
             return;
         }
 
-        FileUtils.mkdirs(targetFile);
+        FileUtil.mkParentDirs(targetFile);
 
         DownloadUtils.download(url, targetFile, header, new BaseDownloadListener() {
             @Override

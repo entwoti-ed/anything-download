@@ -1,19 +1,18 @@
 package top.cyblogs.ffmpeg.exec;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
 import top.cyblogs.data.PathData;
 import top.cyblogs.ffmpeg.command.FFMpegCommand;
 import top.cyblogs.ffmpeg.exception.FFMpegException;
 import top.cyblogs.ffmpeg.listener.FFMpegListener;
 import top.cyblogs.ffmpeg.utils.ExecUtils;
 import top.cyblogs.ffmpeg.utils.ProgressUtils;
-import top.cyblogs.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * 合并视频
@@ -41,16 +40,17 @@ public class MergeVideo {
         }
 
         // 建立目标文件夹
-        FileUtils.mkdirs(out);
+        FileUtil.mkParentDirs(out);
 
         // 存在就删除
-        FileUtils.deleteOnExists(out);
+        FileUtil.del(out);
 
         // 将文件列表写入分离器文件
-        File seperatorFile = new File(PathData.TEMP_FILE_PATH + UUID.randomUUID() + ".txt");
-        try (PrintWriter writer = new PrintWriter(seperatorFile, StandardCharsets.UTF_8)) {
+        File seperatorFile = new File(PathData.TEMP_FILE_PATH + IdUtil.fastSimpleUUID() + ".txt");
+        FileUtil.mkParentDirs(seperatorFile);
+        try (PrintWriter writer = new PrintWriter(seperatorFile, "UTF-8")) {
             for (File video : videos) {
-                writer.println(String.format("file '%s'", video.getAbsolutePath().replace("'", "\\'")));
+                writer.println(String.format("file '%s'", FileUtil.getCanonicalPath(video).replace("'", "\\'")));
             }
         } catch (IOException ignored) {
             throw new FFMpegException("视频合并时, 创建分离器文件出错...");
@@ -61,9 +61,7 @@ public class MergeVideo {
 
         ProgressUtils progressUtils = new ProgressUtils();
         // 执行命令
-        ExecUtils.exec(command, s -> {
-            progressUtils.watchTimeProgress(s, listener);
-        });
+        ExecUtils.exec(command, s -> progressUtils.watchTimeProgress(s, listener));
 
         try {
             // 给一个延时，不要和FFMpeg进程抢资源
@@ -72,7 +70,7 @@ public class MergeVideo {
         }
 
         // 删除临时文件
-        FileUtils.deleteOnExists(seperatorFile);
+        FileUtil.del(seperatorFile);
 
         if (listener != null) {
             listener.over();
