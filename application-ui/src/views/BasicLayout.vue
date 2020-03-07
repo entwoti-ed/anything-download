@@ -31,9 +31,9 @@
             <a class="text-muted" href="https://halo.cyblogs.top" title="访问我的博客" v-b-tooltip.hover>
                 CY'Blogs
             </a>
-            <router-link class="text-muted ml-3" title="更多下载脚本" v-b-tooltip.hover
-                         exact replace tag="a"
-                         to="/moreScript">
+            <router-link class="text-muted ml-3" exact replace
+                         tag="a" title="更多下载脚本" to="/moreScript"
+                         v-b-tooltip.hover>
                 更多脚本
             </router-link>
         </footer>

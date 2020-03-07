@@ -46,6 +46,7 @@ public class SegmentVideoService {
                     downloadStatus.setProgress(0D);
                     downloadStatus.setProgressFormat("0%");
                 }
+
                 @Override
                 public void progress(long current, long total) {
                     downloadStatus.setProgress((double) current / total * 100);

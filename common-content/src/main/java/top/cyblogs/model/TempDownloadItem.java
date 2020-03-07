@@ -27,6 +27,29 @@ public class TempDownloadItem {
      */
     @JsonIgnore
     private DownloadItem downloadStatus;
+    /**
+     * 下载ID
+     */
+    private String downloadId;
+    /**
+     * 文件的名字
+     */
+    private String fileName;
+    /**
+     * 下载类型
+     */
+    @JsonIgnore
+    private ServiceType serviceType;
+    /**
+     * 目标文件
+     */
+    @JsonIgnore
+    private File targetFile;
+    /**
+     * 头信息
+     */
+    @JsonIgnore
+    private Map<String, String> header;
 
     public static TempDownloadItem init(String url, File targetFile, ServiceType serviceType, Map<String, String> header, DownloadItem downloadStatus) {
         TempDownloadItem item = initAndSetProperties(targetFile, serviceType, header, downloadStatus);
@@ -39,34 +62,6 @@ public class TempDownloadItem {
         item.urls = urls;
         return item;
     }
-
-    /**
-     * 下载ID
-     */
-    private String downloadId;
-
-    /**
-     * 文件的名字
-     */
-    private String fileName;
-
-    /**
-     * 下载类型
-     */
-    @JsonIgnore
-    private ServiceType serviceType;
-
-    /**
-     * 目标文件
-     */
-    @JsonIgnore
-    private File targetFile;
-
-    /**
-     * 头信息
-     */
-    @JsonIgnore
-    private Map<String, String> header;
 
     private static TempDownloadItem initAndSetProperties(File targetFile, ServiceType serviceType, Map<String, String> header, DownloadItem downloadStatus) {
         TempDownloadItem item = new TempDownloadItem();

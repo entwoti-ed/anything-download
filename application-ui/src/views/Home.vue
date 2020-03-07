@@ -103,8 +103,7 @@
 
     export default {
         name: 'Home',
-        components: {
-        },
+        components: {},
         created() {
             this.initialDownload();
         },

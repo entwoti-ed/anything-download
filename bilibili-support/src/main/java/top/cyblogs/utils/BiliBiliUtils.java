@@ -17,6 +17,10 @@ import java.util.regex.Pattern;
  */
 public class BiliBiliUtils {
 
+    /**
+     * BiliBili首页
+     */
+    public static final String HOME_URL = "https://www.bilibili.com/";
     private static Pattern PLAY_ID = Pattern.compile("\\d+");
 
     /**
@@ -36,11 +40,6 @@ public class BiliBiliUtils {
         }
         return null;
     }
-
-    /**
-     * BiliBili首页
-     */
-    public static final String HOME_URL = "https://www.bilibili.com/";
 
     /**
      * 获取URL中的文本
