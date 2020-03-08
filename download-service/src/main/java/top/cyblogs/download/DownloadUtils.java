@@ -1,6 +1,7 @@
 package top.cyblogs.download;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.thread.ThreadFactoryBuilder;
 import top.cyblogs.Aria2c;
 import top.cyblogs.data.PathData;
 import top.cyblogs.input.Aria2cOptions;
@@ -16,7 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -58,8 +61,12 @@ public class DownloadUtils {
         aria2c = Aria2c.run(startOptions);
         // 密钥
         token = Secret.token(Aria2cRpcOptions.getInstance().getRpcSecret());
+
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNamePrefix("download-listener-pool-").build();
+        ScheduledExecutorService pool = new ScheduledThreadPoolExecutor(1, namedThreadFactory);
+
         // 做任务监听，每秒钟发送一次请求
-        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
+        pool.scheduleAtFixedRate(() -> {
             ArrayList<Aria2cStatus> status = new ArrayList<>();
             status.addAll(Arrays.asList(aria2c.tellActive(token, new String[]{})));
             status.addAll(Arrays.asList(aria2c.tellWaiting(token, 0, Integer.MAX_VALUE, new String[]{})));

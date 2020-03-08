@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
  */
 public class FileUtils {
 
+    private static final int FILE_NAME_MAX_LENGTH = 255;
     /**
      * 文件名匹配
      * 字母，数字，空格，部分英文符号，汉字，部分汉字符号
@@ -30,7 +31,7 @@ public class FileUtils {
             return IdUtil.fastSimpleUUID();
         }
         // 文件名过长的情况
-        if (fileName.length() > 255) {
+        if (fileName.length() > FILE_NAME_MAX_LENGTH) {
             fileName = fileName.substring(0, 127);
         }
         StringBuilder sb = new StringBuilder();

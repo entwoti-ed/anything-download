@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 public class MoocUtils {
 
+    private static final Pattern UNICODE_PATTERN = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
+
     /**
      * 解析icourse163的dwr，居然用dwr
      *
@@ -54,13 +56,12 @@ public class MoocUtils {
         return result.stream().filter(x -> x.size() > 0 && x.get("name") != null).collect(Collectors.toList());
     }
 
-
     /**
      * Unicode 2 String
      */
     public static String unicodeToString(String str) {
-        Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
-        Matcher matcher = pattern.matcher(str);
+
+        Matcher matcher = UNICODE_PATTERN.matcher(str);
         char ch;
         while (matcher.find()) {
             ch = (char) Integer.parseInt(matcher.group(2), 16);

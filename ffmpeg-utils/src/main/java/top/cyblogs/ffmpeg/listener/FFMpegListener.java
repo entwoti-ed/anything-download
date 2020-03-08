@@ -5,7 +5,7 @@ package top.cyblogs.ffmpeg.listener;
  *
  * @author CY
  */
-public abstract class FFMpegListener {
+public class FFMpegListener {
 
     /**
      * 开始执行

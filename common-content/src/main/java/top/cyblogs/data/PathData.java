@@ -1,5 +1,7 @@
 package top.cyblogs.data;
 
+import cn.hutool.core.io.FileUtil;
+
 import java.io.File;
 
 /**
@@ -12,8 +14,6 @@ public class PathData {
     /**
      * 一堆的文件夹名称
      */
-    public transient static final String TEMP_DIRECTION = System.getProperty("java.io.tmpdir");
-    public transient static final String USER_HOME_DIRECTION = System.getProperty("user.home") + File.separator;
     public transient static final String CY_DIRECTION = "CySoftware" + File.separator;
     public transient static final String APP_DATA_DIRECTION = "AppData" + File.separator + "Local" + File.separator;
     public transient static final String DOWNLOAD_DIRECTION = "Downloads" + File.separator;
@@ -22,17 +22,17 @@ public class PathData {
     /**
      * 临时文件保存的路径
      */
-    public transient static final String TEMP_FILE_PATH = TEMP_DIRECTION + CY_DIRECTION;
+    public transient static final String TEMP_FILE_PATH = FileUtil.getTmpDirPath() + CY_DIRECTION;
 
     /**
      * 默认的下载路径
      */
-    public transient static final String DOWNLOAD_PATH = USER_HOME_DIRECTION + DOWNLOAD_DIRECTION;
+    public transient static final String DOWNLOAD_PATH = FileUtil.getUserHomePath() + File.separator + DOWNLOAD_DIRECTION;
 
     /**
      * 程序的数据目录
      */
-    public transient static final String APP_DATA_PATH = USER_HOME_DIRECTION + APP_DATA_DIRECTION + CY_DIRECTION;
+    public transient static final String APP_DATA_PATH = FileUtil.getUserHomePath() + File.separator + APP_DATA_DIRECTION + CY_DIRECTION;
 
     /**
      * 程序的Commons目录

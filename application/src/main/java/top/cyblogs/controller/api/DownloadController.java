@@ -42,4 +42,10 @@ public class DownloadController {
         downloadService.normalDownload(normalDownload);
         return BaseResponse.ok("开始了...");
     }
+
+    @RequestMapping("cleanTemp")
+    public BaseResponse<String> cleanTemp() {
+        downloadService.cleanTemp();
+        return BaseResponse.ok("清理缓存文件成功!");
+    }
 }

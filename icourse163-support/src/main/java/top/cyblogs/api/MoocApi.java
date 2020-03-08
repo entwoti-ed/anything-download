@@ -19,10 +19,12 @@ import java.util.regex.Pattern;
  */
 public class MoocApi {
 
+    private static final Pattern TID_PATTERN = Pattern.compile("tid=(\\d*)");
+
     private static List<Map<String, Object>> getCourseList(String courseUrl) throws IOException {
         URL url = new URL(courseUrl);
         String query = url.getQuery();
-        Matcher matcher = Pattern.compile("tid=(\\d*)").matcher(query);
+        Matcher matcher = TID_PATTERN.matcher(query);
         List<Map<String, Object>> maps = null;
         if (matcher.find()) {
             String tid = matcher.group(1).trim();
@@ -43,7 +45,7 @@ public class MoocApi {
 
         connect.data("callCount", "1");
         connect.data("scriptSessionId", "${scriptSessionId}190");
-        connect.data("httpSessionId", SessionData.csrfKey);
+        connect.data("httpSessionId", SessionData.csrfKey());
         connect.data("c0-scriptName", "CourseBean");
         connect.data("c0-methodName", "getLastLearnedMocTermDto");
         connect.data("c0-id", "0");
@@ -63,7 +65,7 @@ public class MoocApi {
     }
 
     public static JsonNode getVideoResourceUrl(Long bizId) throws IOException {
-        Connection connect = Jsoup.connect(String.format("https://www.icourse163.org/web/j/resourceRpcBean.getResourceToken.rpc?csrfKey=%s", SessionData.csrfKey)).ignoreContentType(true);
+        Connection connect = Jsoup.connect(String.format("https://www.icourse163.org/web/j/resourceRpcBean.getResourceToken.rpc?csrfKey=%s", SessionData.csrfKey())).ignoreContentType(true);
         connect.header("cookie", SessionData.cookie);
         connect.data("bizId", String.valueOf(bizId));
         connect.data("bizType", "1");

@@ -1,6 +1,7 @@
 package top.cyblogs.start;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.thread.ThreadFactoryBuilder;
 import cn.hutool.core.util.IdUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.exception.NoAvailablePortException;
@@ -10,8 +11,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * Aria2c运行工具, 暂时只支持Windows
@@ -23,6 +23,7 @@ public class Aria2cRpcUtils {
 
     private static final int MIN_PORT_NUMBER = 2 << 9;
     private static final int MAX_PORT_NUMBER = 2 << 15 - 1;
+    private static final int DEFAULT_ARIA2C_PORT = 6800;
 
     /**
      * 运行Aria2c，直到程序结束
@@ -36,10 +37,14 @@ public class Aria2cRpcUtils {
         // 获取命令
         List<String> cmd = getCommand(aria2cFile, options);
 
-        // 守护式运行
-        ExecutorService service = Executors.newSingleThreadExecutor();
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNamePrefix("aria2c-pool-").build();
 
-        service.submit(() -> {
+        // 守护式运行
+        ExecutorService pool = new ThreadPoolExecutor(1, 1,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+
+        pool.submit(() -> {
             try {
                 // 执行Aria2启动命令
                 Process process = processBuilder.command(cmd).start();
@@ -47,7 +52,7 @@ public class Aria2cRpcUtils {
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     log.info("Aria2c服务已经关闭...");
                     process.destroy(); /*销毁Aria2*/
-                    service.shutdownNow(); /*关闭线程池*/
+                    pool.shutdownNow(); /*关闭线程池*/
                 }));
             } catch (IOException ignored) {
             }
@@ -88,12 +93,12 @@ public class Aria2cRpcUtils {
      * @return port
      */
     private static int getAvailablePort() {
-        for (int i = 6800; i <= MAX_PORT_NUMBER; i++) {
+        for (int i = DEFAULT_ARIA2C_PORT; i <= MAX_PORT_NUMBER; i++) {
             if (portAvailable(i)) {
                 return i;
             }
         }
-        for (int i = MIN_PORT_NUMBER; i < 6800; i++) {
+        for (int i = MIN_PORT_NUMBER; i < DEFAULT_ARIA2C_PORT; i++) {
             if (portAvailable(i)) {
                 return i;
             }
@@ -102,7 +107,7 @@ public class Aria2cRpcUtils {
     }
 
     /**
-     * 检查port是否可用
+     * 检查port是否可用, Hutool工具中的类似方法暂时有问题，暂时不考虑切换
      *
      * @param port 端口
      * @return boolean

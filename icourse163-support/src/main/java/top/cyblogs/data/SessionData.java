@@ -4,7 +4,9 @@ import cn.hutool.core.util.StrUtil;
 
 public class SessionData {
 
-    public static final String cookie = "";
+    public static String cookie = "";
 
-    public static final String csrfKey = StrUtil.subBetween(cookie, "NTESSTUDYSI=", ";");
+    public static String csrfKey() {
+        return StrUtil.subBetween(cookie, "NTESSTUDYSI=", ";");
+    }
 }

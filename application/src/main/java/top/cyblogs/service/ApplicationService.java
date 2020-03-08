@@ -1,10 +1,13 @@
 package top.cyblogs.service;
 
+import cn.hutool.core.io.FileUtil;
 import org.springframework.stereotype.Service;
 import top.cyblogs.data.DownloadList;
+import top.cyblogs.data.PathData;
 import top.cyblogs.data.SettingsData;
 import top.cyblogs.download.DownloadServiceExec;
 import top.cyblogs.exception.AlreadyExistsException;
+import top.cyblogs.exception.DownloadBusyException;
 import top.cyblogs.exception.NothingException;
 import top.cyblogs.exception.UrlNotSupportException;
 import top.cyblogs.model.DownloadItem;
@@ -79,5 +82,15 @@ public class ApplicationService {
                 // ignore
             }
         }
+    }
+
+    /**
+     * 清理缓存目录
+     */
+    public void cleanTemp() {
+        if (DownloadList.list.size() > 0) {
+            throw new DownloadBusyException("当前正在下载, 无法清空...");
+        }
+        FileUtil.del(PathData.TEMP_FILE_PATH);
     }
 }
