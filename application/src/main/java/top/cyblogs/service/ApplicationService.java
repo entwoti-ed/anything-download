@@ -2,6 +2,7 @@ package top.cyblogs.service;
 
 import cn.hutool.core.io.FileUtil;
 import org.springframework.stereotype.Service;
+import top.cyblogs.BiliBiliSupport;
 import top.cyblogs.data.DownloadList;
 import top.cyblogs.data.PathData;
 import top.cyblogs.data.SettingsData;
@@ -15,7 +16,6 @@ import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.SupportUrl;
 import top.cyblogs.model.params.AddDownload;
 import top.cyblogs.model.params.NormalDownload;
-import top.cyblogs.support.BiliBiliSupport;
 import top.cyblogs.util.FileUtils;
 
 import java.io.File;

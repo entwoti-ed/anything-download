@@ -14,4 +14,18 @@
     <artifactId>imooc-support</artifactId>
     <description>慕课网的下载支持</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.cy</groupId>
+            <artifactId>common-content</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cy</groupId>
+            <artifactId>ffmpeg-utils</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
 </project>

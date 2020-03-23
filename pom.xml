@@ -58,6 +58,13 @@
             <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
 
+        <!-- M3U8文件解析工具 -->
+        <dependency>
+            <groupId>com.iheartradio.m3u8</groupId>
+            <artifactId>open-m3u8</artifactId>
+            <version>0.2.6</version>
+        </dependency>
+
         <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>

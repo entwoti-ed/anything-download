@@ -136,7 +136,7 @@
                     let keys = Object.keys(query);
                     if (!keys.length) return;
                     keys.forEach(x => {
-                        query[x] = decodeURIComponent(atob(decodeURIComponent(query[x])));
+                        query[x] = decodeURIComponent(query[x]);
                     });
                 }
                 this.showWaiting();

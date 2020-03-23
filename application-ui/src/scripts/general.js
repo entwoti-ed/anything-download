@@ -6,7 +6,7 @@ export default () => {
         /*获取当前页面中的Cookie*/
         cookie: document.cookie
     }).map(x => {
-        return x[0] + "=" + encodeURIComponent(btoa(encodeURIComponent(x[1])));
+        return x[0] + "=" + encodeURIComponent(x[1]);
     }).join("&");
 
     /*传送到Anything Download*/

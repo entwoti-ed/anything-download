@@ -1,4 +1,4 @@
-package top.cyblogs.support;
+package top.cyblogs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.CommonApi;
