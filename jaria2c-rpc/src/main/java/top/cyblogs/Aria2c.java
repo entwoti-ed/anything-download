@@ -109,7 +109,8 @@ public interface Aria2c {
             Integer port = Aria2cRpcOptions.getInstance().getRpcListenPort();
             client = new JsonRpcHttpClient(
                     new URL(String.format("http://127.0.0.1:%s/jsonrpc", port)));
-        } catch (MalformedURLException ignored) {
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
         return ProxyUtil.createClientProxy(
                 Aria2c.class.getClassLoader(),

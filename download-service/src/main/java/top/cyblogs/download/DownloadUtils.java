@@ -2,6 +2,7 @@ package top.cyblogs.download;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadFactoryBuilder;
+import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.Aria2c;
 import top.cyblogs.data.PathData;
 import top.cyblogs.input.Aria2cOptions;
@@ -12,6 +13,7 @@ import top.cyblogs.support.DownloadTaskStatus;
 import top.cyblogs.support.Options;
 import top.cyblogs.support.Secret;
 
+import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +29,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author CY
  */
+@Slf4j
 public class DownloadUtils {
 
     /**
@@ -96,53 +99,55 @@ public class DownloadUtils {
                 Options.of(options), Integer.MAX_VALUE);
 
         // 下载回调
-        callBack(gid, downloadListener);
-    }
-
-    /**
-     * 下载回调
-     */
-    @SuppressWarnings("unchecked")
-    private static void callBack(String gid, BaseDownloadListener downloadListener) {
         observer.getPropertyChangeSupport().addPropertyChangeListener(event -> {
-            List<Aria2cStatus> statuses = (List<Aria2cStatus>) event.getNewValue();
-            Aria2cStatus status = statuses.stream().filter(x -> gid.equals(x.getGid())).findFirst().orElse(null);
-            if (downloadListener != null && status != null) {
-                switch (status.getStatus()) {
-                    case DownloadTaskStatus.ACTIVE: {
-                        downloadListener.active(status);
-                        break;
-                    }
-                    case DownloadTaskStatus.COMPLETE: {
-                        downloadListener.complete(status);
-                        break;
-                    }
-                    case DownloadTaskStatus.ERROR: {
-                        downloadListener.error(status);
-                        break;
-                    }
-                    case DownloadTaskStatus.PAUSED: {
-                        downloadListener.paused(status);
-                        break;
-                    }
-                    case DownloadTaskStatus.REMOVED: {
-                        downloadListener.removed(status);
-                        break;
-                    }
-                    case DownloadTaskStatus.USED: {
-                        downloadListener.used(status);
-                        break;
-                    }
-                    case DownloadTaskStatus.WAITING: {
-                        downloadListener.waiting(status);
-                        break;
-                    }
-                    default: {
-                        break;
-                    }
-                }
+            // 防止吃异常
+            try {
+                callBack(gid, downloadListener, event);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void callBack(String gid, BaseDownloadListener downloadListener, PropertyChangeEvent event) {
+        List<Aria2cStatus> statuses = (List<Aria2cStatus>) event.getNewValue();
+        Aria2cStatus status = statuses.stream().filter(x -> gid.equals(x.getGid())).findFirst().orElse(null);
+        if (downloadListener != null && status != null) {
+            switch (status.getStatus()) {
+                case DownloadTaskStatus.ACTIVE: {
+                    downloadListener.active(status);
+                    break;
+                }
+                case DownloadTaskStatus.COMPLETE: {
+                    downloadListener.complete(status);
+                    break;
+                }
+                case DownloadTaskStatus.ERROR: {
+                    downloadListener.error(status);
+                    break;
+                }
+                case DownloadTaskStatus.PAUSED: {
+                    downloadListener.paused(status);
+                    break;
+                }
+                case DownloadTaskStatus.REMOVED: {
+                    downloadListener.removed(status);
+                    break;
+                }
+                case DownloadTaskStatus.USED: {
+                    downloadListener.used(status);
+                    break;
+                }
+                case DownloadTaskStatus.WAITING: {
+                    downloadListener.waiting(status);
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
     }
 
     public static Aria2cGlobalStat globalStatus() {

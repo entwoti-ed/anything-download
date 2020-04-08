@@ -50,7 +50,8 @@ public class MoocUtils {
                     lastVar = currentVar;
                     keyValue = new HashMap<>();
                 }
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return result.stream().filter(x -> x.size() > 0 && x.get("name") != null).collect(Collectors.toList());

@@ -2,7 +2,8 @@ package top.cyblogs.download.downloader;
 
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
-import top.cyblogs.api.AvApi;
+import lombok.extern.slf4j.Slf4j;
+import top.cyblogs.api.BvApi;
 import top.cyblogs.data.BiliBiliData;
 import top.cyblogs.data.DownloadList;
 import top.cyblogs.data.SettingsData;
@@ -11,19 +12,32 @@ import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
 import top.cyblogs.model.enums.ServiceType;
 import top.cyblogs.util.FileUtils;
-import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class AvDownloader {
+@Slf4j
+public class BvDownloader {
 
     public static void download(String url) {
-        String playId = BiliBiliUtils.getPlayId(url);
+
+        log.info("当前解析地址为BV ==> " + url);
+
+        try {
+            url = new URL(url).getPath();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         // 获取视频初始化信息
-        JsonNode initialState = AvApi.getInitialState(playId);
+        AtomicReference<BvApi> bvApi = new AtomicReference<>(new BvApi(url));
+        JsonNode initialState = bvApi.get().getInitialState();
+
         // 获取分P
         JsonNode pages = initialState.findValue("pages");
 
@@ -31,22 +45,29 @@ public class AvDownloader {
             return;
         }
 
+        String bigTitle = FileUtils.getPrettyFileName(initialState.findValue("videoData").findValue("title").asText());
+
+        String finalUrl = url;
         pages.forEach(x -> {
 
-            String title = "";
+            String title = bigTitle;
 
             // 默认标题
-            title += FileUtils.getPrettyFileName(initialState.findValue("videoData").findValue("title").asText());
             if (pages.size() > 1) {
+
+                int page = x.findValue("page").asInt();
                 // 分P标题
-                title += File.separator + String.format("P%s %s",
-                        x.findValue("page").asText(),
-                        FileUtils.getPrettyFileName(x.findValue("part").asText()));
+                title += File.separator + String.format("P%s %s", page, FileUtils.getPrettyFileName(x.findValue("part").asText()));
+                if (page > 1) {
+                    String path = finalUrl + "?p=" + page;
+                    log.info("正在解析: {}", path);
+                    bvApi.set(new BvApi(path));
+
+                }
             }
 
-            String cid = x.findValue("cid").asText();
             // 获取视频的播放地址
-            JsonNode videoUrl = AvApi.getVideoUrl(playId, cid);
+            JsonNode videoUrl = bvApi.get().getVideoUrl();
             // 如果视频为dash
             JsonNode dash = videoUrl.findValue("dash");
 

@@ -3,7 +3,6 @@ package top.cyblogs.service;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.crypto.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
-import top.cyblogs.data.BaseData;
 import top.cyblogs.data.SettingsData;
 import top.cyblogs.download.BaseDownloadListener;
 import top.cyblogs.download.DownloadUtils;
@@ -80,7 +79,8 @@ public class NormalDownloadService {
             // TODO 需要测试
             @Override
             public void error(Aria2cStatus status) {
-                if (++currentRetryCount <= BaseData.RETRY_COUNT) {
+                if (++currentRetryCount <= 5) {
+                    log.info("正在重试下载...");
                     downloadStatus.setStatusFormat("重试下载...");
                     DownloadUtils.download(url, targetFile, header, this);
                 }

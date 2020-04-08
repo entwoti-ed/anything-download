@@ -1,5 +1,6 @@
 package top.cyblogs;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.CommonApi;
 import top.cyblogs.data.BiliBiliData;
@@ -20,31 +21,35 @@ public class BiliBiliSupport {
         setCookie(cookie);
 
         // 下载普通UP主的视频
-        if (url.contains(DownloadType.AV.getUrlPrefix())) {
+        if (StrUtil.containsIgnoreCase(url, DownloadType.AV.getUrlPrefix())) {
             AvDownloader.download(url);
         }
         // 下载BiliBili音频去的整张专辑
-        else if (url.contains(DownloadType.AM.getUrlPrefix())) {
+        else if (StrUtil.containsIgnoreCase(url, DownloadType.BV.getUrlPrefix())) {
+            BvDownloader.download(url);
+        }
+        // 下载BiliBili音频去的整张专辑
+        else if (StrUtil.containsIgnoreCase(url, DownloadType.AM.getUrlPrefix())) {
             AmDownloader.download(url);
         }
         // 下载BiliBili的音频
-        else if (url.contains(DownloadType.AU.getUrlPrefix())) {
+        else if (StrUtil.containsIgnoreCase(url, DownloadType.AU.getUrlPrefix())) {
             AuDownloader.download(url);
         }
         // 下载BiliBili的电视剧，电影，纪录片等
-        else if (url.contains(DownloadType.EP.getUrlPrefix())) {
+        else if (StrUtil.containsIgnoreCase(url, DownloadType.EP.getUrlPrefix())) {
             EpDownloader.download(url);
         }
         // 下载BiliBili的直播
-        else if (url.contains(DownloadType.LIVE.getUrlPrefix())) {
+        else if (StrUtil.containsIgnoreCase(url, DownloadType.LIVE.getUrlPrefix())) {
             LiveDownloader.download(url);
         }
         // 下载BiliBili的番剧
-        else if (url.contains(DownloadType.SS.getUrlPrefix())) {
+        else if (StrUtil.containsIgnoreCase(url, DownloadType.SS.getUrlPrefix())) {
             SsDownloader.download(url);
         }
         // 下载BiliBili的小视频
-        else if (url.contains(DownloadType.VC.getUrlPrefix())) {
+        else if (StrUtil.containsIgnoreCase(url, DownloadType.VC.getUrlPrefix())) {
             VcDownloader.download(url);
         }
         // 不被支持

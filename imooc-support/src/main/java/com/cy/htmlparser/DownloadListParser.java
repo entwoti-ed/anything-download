@@ -30,8 +30,6 @@ import java.util.List;
  */
 public class DownloadListParser {
 
-    private static final String COOKIE_NAME = "apsid";
-
     public static List<DownloadItem> parse(String url) throws IOException {
 
         if (url.contains(ImoocBaseData.FREE)) {
@@ -57,7 +55,7 @@ public class DownloadListParser {
      * @param url 链接
      */
     private static ArrayList<DownloadItem> freeVideo(String url) throws IOException {
-        Document document = Jsoup.connect(url).cookie(COOKIE_NAME, ImoocBaseData.apsid).get();
+        Document document = Jsoup.connect(url).header("Cookie", ImoocBaseData.cookie).get();
         // 获取课程的名字 例如：微服务架构在二手交易平台（转转）中的实践
         final String title = document.select("h2.l").text().trim();
         ArrayList<DownloadItem> downloadList = new ArrayList<>();
@@ -73,7 +71,7 @@ public class DownloadListParser {
                 if (suffixUrl.contains("video")) {
                     String _id = StrUtil.subBetween(
                             Jsoup.connect(ImoocBaseData.HOME_URL + suffixUrl)
-                                    .cookie(COOKIE_NAME, ImoocBaseData.apsid).get().toString(),
+                                    .header("Cookie", ImoocBaseData.cookie).get().toString(),
                             "OP_CONFIG.mongo_id=\"", "\";");
                     downloadItem.setUrl("https://www.imooc.com/course/playlist" + suffixUrl + "&_id=" + _id);
                     int i = courseName.lastIndexOf("(") == -1 ? courseName.length() : courseName.lastIndexOf("(") - 1;
@@ -138,7 +136,7 @@ public class DownloadListParser {
      * @throws IOException #
      */
     private static ArrayList<DownloadItem> tryVideo(String url) throws IOException {
-        Document document = Jsoup.connect(url).cookie(COOKIE_NAME, ImoocBaseData.apsid).get();
+        Document document = Jsoup.connect(url).header("Cookie", ImoocBaseData.cookie).get();
         final String title = document.select("h1.l").text(); // 下载的课程的名字
         String cid = document.select("[data-cid]").attr("data-cid"); // 获取课程的Id
         ArrayList<DownloadItem> downloadList = new ArrayList<>();
@@ -174,7 +172,7 @@ public class DownloadListParser {
      * @param url 链接
      */
     private static ArrayList<DownloadItem> payVideo(String url) throws IOException {
-        Document document = Jsoup.connect(url).cookie(COOKIE_NAME, ImoocBaseData.apsid).get();
+        Document document = Jsoup.connect(url).header("Cookie", ImoocBaseData.cookie).get();
         String title = document.select("h2.course-title").text(); // 下载的课程的名字
         String urlPathName = new File(new URL(url).getPath()).getName();
         String cid = urlPathName.substring(0, urlPathName.indexOf("."));

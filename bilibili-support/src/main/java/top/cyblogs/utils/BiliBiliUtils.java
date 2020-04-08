@@ -4,7 +4,6 @@ package top.cyblogs.utils;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpUtil;
 import top.cyblogs.data.BiliBiliData;
-import top.cyblogs.data.HttpData;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,10 +16,6 @@ import java.util.regex.Pattern;
  */
 public class BiliBiliUtils {
 
-    /**
-     * BiliBili首页
-     */
-    public static final String HOME_URL = "https://www.bilibili.com/";
     private static Pattern PLAY_ID = Pattern.compile("\\d+");
 
     /**
@@ -35,7 +30,8 @@ public class BiliBiliUtils {
             if (matcher.find()) {
                 return matcher.group(0);
             }
-        } catch (MalformedURLException ignored) {
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("添加下载的URL格式不正确!");
         }
         return null;
@@ -46,9 +42,7 @@ public class BiliBiliUtils {
      */
     public static String urlText(String url) {
         HttpRequest request = HttpUtil.createGet(url);
-        request.header("User-Agent", HttpData.USER_AGENT);
-        request.header("Origin", HOME_URL);
-        request.header("Referer", HOME_URL);
+        request.cookie(BiliBiliData.cookie);
         BiliBiliData.header().forEach(request::header);
         return request.execute().body();
     }

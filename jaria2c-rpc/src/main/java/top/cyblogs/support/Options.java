@@ -50,7 +50,8 @@ public class Options extends HashMap<String, Object> {
                 String key = optionName.value();
                 option.put(key, value);
             }
-        } catch (IllegalAccessException ignored) {
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
         return option;
     }

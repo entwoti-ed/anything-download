@@ -1,6 +1,7 @@
 package top.cyblogs.start;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.thread.ThreadFactoryBuilder;
 import cn.hutool.core.util.IdUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +55,9 @@ public class Aria2cRpcUtils {
                     process.destroy(); /*销毁Aria2*/
                     pool.shutdownNow(); /*关闭线程池*/
                 }));
-            } catch (IOException ignored) {
+                IoUtil.copy(process.getInputStream(), System.out);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
 
@@ -121,7 +124,8 @@ public class Aria2cRpcUtils {
             ss.setReuseAddress(true);
             ds.setReuseAddress(true);
             return true;
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            log.debug(port + "端口已经被占用, 正在为您切换...");
         }
         return false;
     }

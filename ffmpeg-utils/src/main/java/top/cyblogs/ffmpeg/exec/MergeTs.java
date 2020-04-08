@@ -52,7 +52,8 @@ public class MergeTs {
         try {
             // 给一个延时，不要和FFMpeg进程抢资源
             Thread.sleep(1000);
-        } catch (InterruptedException ignored) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         if (listener != null) {

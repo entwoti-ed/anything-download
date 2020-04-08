@@ -26,7 +26,7 @@
         <div class="cover-screen d-flex flex-column justify-content-center align-items-center"
              v-if="currentState === 'waiting'">
             <b-spinner label="Spinning" style="width: 120px; height: 120px;" type="grow" variant="danger"/>
-            <span class="text-white mt-4">正在请求中, 请稍等...</span>
+            <span class="text-white mt-4">正在解析中, 请稍等...</span>
         </div>
 
         <div class="cover-screen d-flex flex-column justify-content-center align-items-center"

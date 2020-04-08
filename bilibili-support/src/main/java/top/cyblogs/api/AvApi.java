@@ -14,12 +14,15 @@ import top.cyblogs.utils.BiliBiliUtils;
  */
 public class AvApi {
 
-    /*获取视频链接API*/
+    /**
+     * 获取视频链接API
+     */
     private static final String VIDEO_URL = "https://api.bilibili.com/x/player/playurl?avid=%s&cid=%s&qn=1024&type=json&otype=json&fnver=0&fnval=16";
-    /*AV首页的URL用来获取初始信息*/
+
+    /**
+     * AV首页的URL用来获取初始信息
+     */
     private static final String AV_INDEX_URL = "https://www.bilibili.com/video/av%s";
-    /*AV分P的URL，用来获取各个P的视频URL*/
-    private static final String AV_PAGE_URL = "https://www.bilibili.com/video/av%s?p=%s";
 
     /**
      * 获取视频的播放链接
@@ -30,18 +33,6 @@ public class AvApi {
      */
     public static JsonNode getVideoUrl(String avid, String cid) {
         String json = BiliBiliUtils.urlText(String.format(VIDEO_URL, avid, cid));
-        return JacksonUtils.toJsonNode(json);
-    }
-
-    /**
-     * 获取视频的播放链接
-     *
-     * @param avid AV号
-     * @return 视频播放链接列表
-     */
-    public static JsonNode getVideoUrl2(String avid, String page) {
-        String html = BiliBiliUtils.urlText(String.format(AV_PAGE_URL, avid, page));
-        String json = StrUtil.subBetween(html, "<script>window.__playinfo__=", "</script>");
         return JacksonUtils.toJsonNode(json);
     }
 

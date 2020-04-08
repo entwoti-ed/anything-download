@@ -189,7 +189,8 @@ public class Aria2cRpcOptions {
                 }
                 options.add(String.format("--%s=\"%s\"", optionName.value(), value));
             }
-        } catch (IllegalAccessException ignored) {
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
         return options;
     }

@@ -18,6 +18,7 @@ public enum DownloadType {
      * AV
      */
     AV("www.bilibili.com/video/av"),
+    BV("www.bilibili.com/video/BV"),
     /**
      * EP
      */

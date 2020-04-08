@@ -52,7 +52,8 @@ public class MergeVideo {
             for (File video : videos) {
                 writer.println(String.format("file '%s'", FileUtil.getCanonicalPath(video).replace("'", "\\'")));
             }
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new FFMpegException("视频合并时, 创建分离器文件出错...");
         }
 
@@ -66,7 +67,8 @@ public class MergeVideo {
         try {
             // 给一个延时，不要和FFMpeg进程抢资源
             Thread.sleep(1000);
-        } catch (InterruptedException ignored) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         // 删除临时文件
