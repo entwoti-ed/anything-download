@@ -1,5 +1,6 @@
 package top.cyblogs.download.downloader;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.AmApi;
@@ -15,10 +16,15 @@ import top.cyblogs.util.FileUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AmDownloader {
 
-    public static void download(String url) {
+    public static String download(String url) {
+
+        String listId = IdUtil.fastSimpleUUID();
+        List<TempDownloadItem> list = new ArrayList<>();
 
         String playId = BiliBiliUtils.getPlayId(url);
 
@@ -45,7 +51,7 @@ public class AmDownloader {
             mp3Status.setDownloadType(DownloadType.AUDIO);
             File targetFile = new File(SettingsData.path + filePath + ".mp3");
 
-            DownloadList.tempList.add(
+            list.add(
                     TempDownloadItem.init(music, targetFile, ServiceType.NORMAL, BiliBiliData.header(), mp3Status)
             );
 
@@ -54,7 +60,7 @@ public class AmDownloader {
                 lrcStatus.setSource(BiliBiliData.SOURCE);
                 lrcStatus.setDownloadType(DownloadType.LRC);
                 File lrcTargetFile = new File(SettingsData.path + filePath + ".lrc");
-                DownloadList.tempList.add(
+                list.add(
                         TempDownloadItem.init(lyric, lrcTargetFile, ServiceType.NORMAL, BiliBiliData.header(), lrcStatus)
                 );
             }
@@ -64,5 +70,8 @@ public class AmDownloader {
                 AvDownloader.download("https://www.bilibili.com/video/av" + aid);
             }
         });
+
+        DownloadList.tempMap.put(listId, list);
+        return listId;
     }
 }

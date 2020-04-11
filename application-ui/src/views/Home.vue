@@ -1,9 +1,9 @@
 <template>
     <div id="home">
 
-        <div class="d-flex flex-column justify-content-center align-items-center" style="height: 50vh;">
+        <div class="d-flex flex-column align-items-center" style="height: 50vh;">
 
-            <font-awesome-icon class="text-muted" icon="download" size="7x"/>
+            <font-awesome-icon class="mt-4 text-muted" icon="download" size="7x"/>
 
             <div class="mt-5 my-3">粘贴链接到下面, 然后点击下载按钮</div>
 
@@ -110,6 +110,7 @@
         data() {
             return {
                 url: null,
+                listId: null,
                 generalScript: scriptList.general,
                 selectDownload: [],
                 tempDownloadList: [],
@@ -149,7 +150,9 @@
                 } else {
                     api.downloadList(query, response => {
                         if (response.flag) {
-                            this.showSelectList(response.data);
+                            let data = response.data;
+                            this.listId = data.listId;
+                            this.showSelectList(data.list);
                         } else {
                             if (response.status === "FORBIDDEN") {
                                 this.showLogin();
@@ -208,7 +211,7 @@
                         }
                     });
                 } else {
-                    api.startDownload(this.selectDownload, response => {
+                    api.startDownload(this.listId, this.selectDownload, response => {
                         if (response.flag) {
                             this.closeMessage();
                             this.$router.replace({

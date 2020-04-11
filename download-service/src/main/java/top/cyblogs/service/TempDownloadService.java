@@ -30,6 +30,8 @@ import java.util.concurrent.*;
 @Slf4j
 class TempDownloadService {
 
+    private Integer currentRetryCount = 0;
+
     /**
      * 下载视频集合并合并
      *
@@ -139,8 +141,6 @@ class TempDownloadService {
             });
         }
     }
-
-    private Integer currentRetryCount = 0;
 
     @Data
     @Accessors(chain = true)

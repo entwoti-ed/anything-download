@@ -16,41 +16,41 @@ import top.cyblogs.exception.ForbiddenException;
  */
 public class BiliBiliSupport {
 
-    public static void start(String url, String cookie) {
+    public static String start(String url, String cookie) {
 
         setCookie(cookie);
 
         // 下载普通UP主的视频
         if (StrUtil.containsIgnoreCase(url, DownloadType.AV.getUrlPrefix())) {
-            AvDownloader.download(url);
+            return AvDownloader.download(url);
         }
         // 下载BiliBili音频去的整张专辑
         else if (StrUtil.containsIgnoreCase(url, DownloadType.BV.getUrlPrefix())) {
-            BvDownloader.download(url);
+            return BvDownloader.download(url);
         }
         // 下载BiliBili音频去的整张专辑
         else if (StrUtil.containsIgnoreCase(url, DownloadType.AM.getUrlPrefix())) {
-            AmDownloader.download(url);
+            return AmDownloader.download(url);
         }
         // 下载BiliBili的音频
         else if (StrUtil.containsIgnoreCase(url, DownloadType.AU.getUrlPrefix())) {
-            AuDownloader.download(url);
+            return AuDownloader.download(url);
         }
         // 下载BiliBili的电视剧，电影，纪录片等
         else if (StrUtil.containsIgnoreCase(url, DownloadType.EP.getUrlPrefix())) {
-            EpDownloader.download(url);
+            return EpDownloader.download(url);
         }
         // 下载BiliBili的直播
         else if (StrUtil.containsIgnoreCase(url, DownloadType.LIVE.getUrlPrefix())) {
-            LiveDownloader.download(url);
+            return LiveDownloader.download(url);
         }
         // 下载BiliBili的番剧
         else if (StrUtil.containsIgnoreCase(url, DownloadType.SS.getUrlPrefix())) {
-            SsDownloader.download(url);
+            return SsDownloader.download(url);
         }
         // 下载BiliBili的小视频
         else if (StrUtil.containsIgnoreCase(url, DownloadType.VC.getUrlPrefix())) {
-            VcDownloader.download(url);
+            return VcDownloader.download(url);
         }
         // 不被支持
         else {

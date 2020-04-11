@@ -13,7 +13,7 @@ export default () => {
             return x[0] + "=" + encodeURIComponent(x[1]);
         }).join("&");
 
-        window.open(`http://127.0.0.1:10086/#/${query}`);
+        window.open(`http://127.0.0.1:10086/#/${query}`, 'anything-download');
     } catch (e) {
         console.error(e);
         alert("当前页面不支持使用该插件!");

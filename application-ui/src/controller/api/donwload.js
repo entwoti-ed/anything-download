@@ -27,8 +27,8 @@ export default {
      * @param query
      * @param callback
      */
-    startDownload(query, callback) {
-        cFetch("/download/startDownload", query, callback);
+    startDownload(listId, query, callback) {
+        cFetch(`/download/startDownload?listId=${listId}`, query, callback);
     },
 
     /**

@@ -13,6 +13,7 @@ import top.cyblogs.exception.NothingException;
 import top.cyblogs.exception.UrlNotSupportException;
 import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.TempDownloadItem;
+import top.cyblogs.model.dto.TempDownloadListDTO;
 import top.cyblogs.model.enums.SupportUrl;
 import top.cyblogs.model.params.AddDownload;
 import top.cyblogs.model.params.NormalDownload;
@@ -32,26 +33,27 @@ import java.util.stream.Collectors;
 @Service
 public class ApplicationService {
 
-    public List<TempDownloadItem> download(AddDownload download) {
-        DownloadList.tempList.clear();
+    public TempDownloadListDTO download(AddDownload download) {
+
         String url = download.getUrl();
         if (url.contains(SupportUrl.BILIBILI.getUrlContains())) {
-            BiliBiliSupport.start(url, download.getCookie());
+            String listId = BiliBiliSupport.start(url, download.getCookie());
+            List<TempDownloadItem> downloadList = DownloadList.tempMap.get(listId);
+            if (downloadList.size() == 0) {
+                throw new NothingException("啥都没有获取到! 可能你没有购买VIP或者视频，如有其他原因请issues...");
+            }
+            return new TempDownloadListDTO(listId, downloadList);
         } else {
             throw new UrlNotSupportException("您要下载的URL还没有被支持, 请查看支持列表");
         }
-        if (DownloadList.tempList.size() == 0) {
-            throw new NothingException("啥都没有获取到! 可能你没有购买VIP或者视频，如有其他原因请issues...");
-        }
-        return DownloadList.tempList;
     }
 
-    public void startDownload(List<String> downloadList) {
+    public void startDownload(String listId, List<String> downloadList) {
         List<String> idList = downloadList.stream().filter(downloadId -> DownloadList.list.stream().noneMatch(downloadItem -> downloadItem.getDownloadId().equals(downloadId))).collect(Collectors.toList());
         if (idList.size() == 0) {
             throw new AlreadyExistsException("你要下载的内容本来就在列表中了!");
         }
-        List<TempDownloadItem> downloadItems = DownloadList.tempList.stream().filter(x -> idList.contains(x.getDownloadId())).collect(Collectors.toList());
+        List<TempDownloadItem> downloadItems = DownloadList.tempMap.get(listId).stream().filter(x -> idList.contains(x.getDownloadId())).collect(Collectors.toList());
         DownloadServiceExec.startDownload(downloadItems);
     }
 

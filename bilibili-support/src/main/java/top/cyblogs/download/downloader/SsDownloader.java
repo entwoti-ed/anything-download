@@ -1,5 +1,6 @@
 package top.cyblogs.download.downloader;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.EpApi;
@@ -15,6 +16,8 @@ import top.cyblogs.util.FileUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SsDownloader {
 
@@ -22,23 +25,30 @@ public class SsDownloader {
         download("https://www.bilibili.com/bangumi/play/ss29334/");
     }
 
-    public static void download(String url) {
+    public static String download(String url) {
+
+        String listId = IdUtil.fastSimpleUUID();
+        List<TempDownloadItem> list = new ArrayList<>();
+
         String playId = BiliBiliUtils.getPlayId(url);
         JsonNode ssInitialState = SsApi.getSsInitialState(playId);
 
         // 标题
         String title = FileUtils.getPrettyFileName(ssInitialState.findValue("mediaInfo").findValue("title").asText());
         // 正片
-        ssInitialState.findValue("epList").forEach(y -> downloadEp(y, title));
+        ssInitialState.findValue("epList").forEach(y -> downloadEp(y, title, list));
 
         ssInitialState.findValue("sections").forEach(x -> {
             String sectionTitle = FileUtils.getPrettyFileName(x.findValue("title").asText());
             x.findValue("epList").forEach(y -> downloadEp(y,
-                    title + File.separator + sectionTitle));
+                    title + File.separator + sectionTitle, list));
         });
+
+        DownloadList.tempMap.put(listId, list);
+        return listId;
     }
 
-    private static void downloadEp(JsonNode epItem, String parentPath) {
+    private static void downloadEp(JsonNode epItem, String parentPath, List<TempDownloadItem> list) {
 
         String title = epItem.findValue("titleFormat").asText() + " " + epItem.findValue("longTitle").asText();
 
@@ -62,7 +72,7 @@ public class SsDownloader {
         JsonNode dash = videoUrl.findValue("dash");
         if (dash != null) {
             String[] dashUrl = getDashUrl(dash);
-            DownloadList.tempList.add(
+            list.add(
                     TempDownloadItem.init(dashUrl, targetFile, ServiceType.SEPERATE, BiliBiliData.header(), videoStatus)
             );
             return;
@@ -71,7 +81,7 @@ public class SsDownloader {
         JsonNode durl = videoUrl.findValue("durl");
         if (durl != null) {
             String[] durlUrl = getDurlUrl(durl);
-            DownloadList.tempList.add(
+            list.add(
                     TempDownloadItem.init(durlUrl, targetFile, ServiceType.SEGMENT, BiliBiliData.header(), videoStatus)
             );
         }

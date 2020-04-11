@@ -1,5 +1,6 @@
 package top.cyblogs.download.downloader;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.AuApi;
@@ -13,10 +14,16 @@ import top.cyblogs.model.enums.ServiceType;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AuDownloader {
 
-    public static void download(String url) {
+    public static String download(String url) {
+
+        String listId = IdUtil.fastSimpleUUID();
+        List<TempDownloadItem> list = new ArrayList<>();
+
         String playId = BiliBiliUtils.getPlayId(url);
         JsonNode musicDetail = AuApi.getMusicDetail(playId);
         JsonNode detailData = musicDetail.findValue("data");
@@ -37,8 +44,11 @@ public class AuDownloader {
         mp3Status.setDownloadType(DownloadType.AUDIO);
         File targetFile = new File(SettingsData.path + title + ".mp3");
 
-        DownloadList.tempList.add(
+        list.add(
                 TempDownloadItem.init(downloadUrl, targetFile, ServiceType.NORMAL, BiliBiliData.header(), mp3Status)
         );
+
+        DownloadList.tempMap.put(listId, list);
+        return listId;
     }
 }

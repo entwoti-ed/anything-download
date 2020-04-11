@@ -1,5 +1,6 @@
 package top.cyblogs.download.downloader;
 
+import cn.hutool.core.util.IdUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import top.cyblogs.api.LiveApi;
 import top.cyblogs.data.BiliBiliData;
@@ -13,6 +14,8 @@ import top.cyblogs.util.FileUtils;
 import top.cyblogs.utils.BiliBiliUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 直播下载器
@@ -27,7 +30,11 @@ import java.io.File;
  */
 public class LiveDownloader {
 
-    public static void download(String url) {
+    public static String download(String url) {
+
+        String listId = IdUtil.fastSimpleUUID();
+        List<TempDownloadItem> list = new ArrayList<>();
+
         // 获取房间标题
         String playId = BiliBiliUtils.getPlayId(url);
         JsonNode infoByRoom = LiveApi.getInfoByRoom(playId);
@@ -45,7 +52,7 @@ public class LiveDownloader {
             // 获取下载地址
             JsonNode roomPlayInfo = LiveApi.getPlayUrl(playId);
             String liveUrl = roomPlayInfo.findValue("data").findValue("durl").get(0).findValue("url").asText();
-            DownloadList.tempList.add(
+            list.add(
                     TempDownloadItem.init(liveUrl, targetFile, ServiceType.NORMAL, BiliBiliData.header(), videoStatus)
             );
         } else if (liveStatus == 2) {
@@ -55,5 +62,7 @@ public class LiveDownloader {
             System.err.println("未开播");
         }
 
+        DownloadList.tempMap.put(listId, list);
+        return listId;
     }
 }

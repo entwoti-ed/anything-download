@@ -17,6 +17,5 @@ public class Application {
     public static void main(String[] args) {
         DownloadFFMpeg.download();
         SpringApplication.run(Application.class, args);
-        log.info("启动成功, 请访问: http://127.0.0.1:10086");
     }
 }

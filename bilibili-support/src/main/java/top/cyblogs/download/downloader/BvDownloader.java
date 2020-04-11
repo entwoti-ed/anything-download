@@ -1,5 +1,6 @@
 package top.cyblogs.download.downloader;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,7 @@ import top.cyblogs.api.BvApi;
 import top.cyblogs.data.BiliBiliData;
 import top.cyblogs.data.DownloadList;
 import top.cyblogs.data.SettingsData;
+import top.cyblogs.exception.BadRequestException;
 import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.model.enums.DownloadType;
@@ -16,7 +18,9 @@ import top.cyblogs.util.FileUtils;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -24,7 +28,10 @@ import java.util.stream.StreamSupport;
 @Slf4j
 public class BvDownloader {
 
-    public static void download(String url) {
+    public static String download(String url) {
+
+        String listId = IdUtil.fastSimpleUUID();
+        List<TempDownloadItem> list = new ArrayList<>();
 
         log.info("当前解析地址为BV ==> " + url);
 
@@ -42,7 +49,7 @@ public class BvDownloader {
         JsonNode pages = initialState.findValue("pages");
 
         if (pages.size() == 0) {
-            return;
+            throw new BadRequestException("无法获取视频数据...");
         }
 
         String bigTitle = FileUtils.getPrettyFileName(initialState.findValue("videoData").findValue("title").asText());
@@ -79,7 +86,7 @@ public class BvDownloader {
             if (dash != null) {
                 String[] dashUrl = getDashUrl(dash);
 
-                DownloadList.tempList.add(
+                list.add(
                         TempDownloadItem.init(dashUrl, targetFile, ServiceType.SEPERATE, BiliBiliData.header(), videoStatus)
                 );
                 return;
@@ -88,13 +95,17 @@ public class BvDownloader {
             JsonNode durl = videoUrl.findValue("durl");
             if (durl != null) {
                 String[] durlUrl = getDurlUrl(durl);
-                DownloadList.tempList.add(
+                list.add(
                         TempDownloadItem.init(durlUrl, targetFile, ServiceType.SEGMENT, BiliBiliData.header(), videoStatus)
                 );
             }
         });
 
-        System.err.println(JSONUtil.toJsonStr(DownloadList.tempList));
+        DownloadList.tempMap.put(listId, list);
+
+        System.err.println(JSONUtil.toJsonStr(DownloadList.tempMap));
+
+        return listId;
     }
 
     /**

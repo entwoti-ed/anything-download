@@ -4,7 +4,9 @@ import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.TempDownloadItem;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 存放下载的数据
@@ -21,5 +23,5 @@ public class DownloadList {
     /**
      * 临时下载列表，用于展示到前端供用户选择
      */
-    public transient static List<TempDownloadItem> tempList = new ArrayList<>();
+    public transient static Map<String, List<TempDownloadItem>> tempMap = new HashMap<>();
 }
