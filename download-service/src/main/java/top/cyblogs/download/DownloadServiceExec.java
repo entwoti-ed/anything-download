@@ -1,6 +1,5 @@
 package top.cyblogs.download;
 
-import top.cyblogs.data.SettingsData;
 import top.cyblogs.exception.AlreadyExistsException;
 import top.cyblogs.model.TempDownloadItem;
 import top.cyblogs.service.HlsVideoService;
@@ -18,8 +17,8 @@ import java.util.List;
 public class DownloadServiceExec {
 
     public static void startDownload(List<TempDownloadItem> list) {
-        if (SettingsData.skipIfExists && list.stream().allMatch(x -> x.getTargetFile().exists())) {
-            throw new AlreadyExistsException("文件都已经在硬盘上了...");
+        if (list.stream().allMatch(x -> x.getTargetFile().exists())) {
+            throw new AlreadyExistsException("文件都已经在硬盘上了, 如果某个文件损坏, 请删除文件后再次启动程序...");
         }
         list.forEach(x -> {
             switch (x.getServiceType()) {

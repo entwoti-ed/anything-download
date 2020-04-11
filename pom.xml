@@ -6,7 +6,6 @@
 
     <!--一大堆的模块，可能会整改-->
     <modules>
-        <module>jaria2c-rpc</module>
         <module>application</module>
         <module>common-content</module>
         <module>download-service</module>

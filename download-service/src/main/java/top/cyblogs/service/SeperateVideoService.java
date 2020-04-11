@@ -33,36 +33,35 @@ public class SeperateVideoService {
     /**
      * 合并视频
      *
-     * @param seperateUrls 片段文件
-     * @param targetFile   目标文件
+     * @param files      片段文件
+     * @param targetFile 目标文件
      */
-    private static void mergeVideo(List<File> seperateUrls, File targetFile, DownloadItem downloadStatus) {
-        ServiceUtils.waitingDownloadFinish(seperateUrls, files -> {
-            MergeVideoAndAudio.exec(files.get(0), files.get(1), targetFile, new FFMpegListener() {
-                @Override
-                public void start() {
-                    downloadStatus.setStatusFormat("正在合并...");
-                    downloadStatus.setStatus(DownloadStatus.MERGING);
-                    downloadStatus.setProgress(0D);
-                    downloadStatus.setProgressFormat("0%");
-                }
+    private static void mergeVideo(List<File> files, File targetFile, DownloadItem downloadStatus) {
 
-                @Override
-                public void progress(long current, long total) {
-                    downloadStatus.setProgress((double) current / total * 100);
-                    downloadStatus.setProgressFormat(ServiceUtils.ratioString(current, total, true));
-                }
+        MergeVideoAndAudio.exec(files.get(0), files.get(1), targetFile, new FFMpegListener() {
+            @Override
+            public void start() {
+                downloadStatus.setStatusFormat("正在合并...");
+                downloadStatus.setStatus(DownloadStatus.MERGING);
+                downloadStatus.setProgress(0D);
+                downloadStatus.setProgressFormat("0%");
+            }
 
-                @Override
-                public void over() {
-                    downloadStatus.setStatusFormat("合并完成!");
-                    downloadStatus.setStatus(DownloadStatus.FINISHED);
-                    downloadStatus.setProgress(100D);
-                    downloadStatus.setProgressFormat("100%");
-                    // 合并完成后删除下载的临时文件
-                    seperateUrls.forEach(FileUtil::del);
-                }
-            });
+            @Override
+            public void progress(long current, long total) {
+                downloadStatus.setProgress((double) current / total * 100);
+                downloadStatus.setProgressFormat(ServiceUtils.ratioString(current, total, true));
+            }
+
+            @Override
+            public void over() {
+                downloadStatus.setStatusFormat("合并完成!");
+                downloadStatus.setStatus(DownloadStatus.FINISHED);
+                downloadStatus.setProgress(100D);
+                downloadStatus.setProgressFormat("100%");
+                // 合并完成后删除下载的临时文件
+                files.forEach(FileUtil::del);
+            }
         });
     }
 }

@@ -27,12 +27,12 @@
             <artifactId>ffmpeg-utils</artifactId>
             <version>0.0.1</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.cy</groupId>
             <artifactId>jaria2c-rpc</artifactId>
             <version>0.0.1</version>
             <scope>compile</scope>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
 </project>

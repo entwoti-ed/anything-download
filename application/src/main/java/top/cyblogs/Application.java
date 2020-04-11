@@ -1,21 +1,22 @@
 package top.cyblogs;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import top.cyblogs.init.DownloadAria2c;
 import top.cyblogs.init.DownloadFFMpeg;
 
 /**
  * 程序启动类
  */
+@Slf4j
 @EnableScheduling
 @SpringBootApplication
 public class Application {
 
     public static void main(String[] args) {
-        DownloadAria2c.download();
         DownloadFFMpeg.download();
         SpringApplication.run(Application.class, args);
+        log.info("启动成功, 请访问: http://127.0.0.1:10086");
     }
 }

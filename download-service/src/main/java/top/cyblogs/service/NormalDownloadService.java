@@ -4,11 +4,10 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.crypto.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.data.SettingsData;
-import top.cyblogs.download.BaseDownloadListener;
-import top.cyblogs.download.DownloadUtils;
+import top.cyblogs.listener.DownloadListener;
 import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.enums.DownloadStatus;
-import top.cyblogs.output.Aria2cStatus;
+import top.cyblogs.utils.DownloadUtils;
 import top.cyblogs.utils.ServiceUtils;
 
 import java.io.File;
@@ -59,26 +58,31 @@ public class NormalDownloadService {
 
         FileUtil.mkParentDirs(targetFile);
 
-        DownloadUtils.download(url, targetFile, header, new BaseDownloadListener() {
+        DownloadUtils.download(url, targetFile, header, new DownloadListener() {
+
             @Override
-            public void active(Aria2cStatus status) {
+            public void connecting(String url) {
+                downloadStatus.setStatusFormat("正在连接...");
+            }
+
+            @Override
+            public void start(long length) {
                 // 开始下载
                 downloadStatus.setStatusFormat("正在下载...");
                 downloadStatus.setStatus(DownloadStatus.DOWNLOADING);
-                downloadStatus.setCurrentSpeed(FileUtil.readableFileSize(status.getDownloadSpeed()) + "/S");
-                downloadStatus.setTotalSize(FileUtil.readableFileSize(status.getTotalLength()));
-                downloadStatus.setProgress((double) status.getCompletedLength() / status.getTotalLength() * 100);
-                downloadStatus.setProgressFormat(ServiceUtils.ratioString(status.getCompletedLength(), status.getTotalLength(), true));
+                downloadStatus.setTotalSize(FileUtil.readableFileSize(length));
             }
 
             @Override
-            public void paused(Aria2cStatus status) {
-                super.paused(status);
+            public void downloading(double progress, long speed, long time) {
+                downloadStatus.setCurrentSpeed(FileUtil.readableFileSize(speed) + "/S");
+                downloadStatus.setProgress(progress * 100);
+                downloadStatus.setProgressFormat(ServiceUtils.ratioString(progress));
             }
 
-            // TODO 需要测试
             @Override
-            public void error(Aria2cStatus status) {
+            public void downloadError(Exception e) {
+                // 下面的常量5，当时放在data包下面，但是执行到这里就不执行了，有时间研究一下这是为什么？
                 if (++currentRetryCount <= 5) {
                     log.info("正在重试下载...");
                     downloadStatus.setStatusFormat("重试下载...");
@@ -87,22 +91,12 @@ public class NormalDownloadService {
             }
 
             @Override
-            public void complete(Aria2cStatus status) {
+            public void over(long time) {
                 downloadStatus.setStatusFormat("下载完成!");
                 downloadStatus.setStatus(DownloadStatus.FINISHED);
                 downloadStatus.setCurrentSpeed(null);
                 downloadStatus.setProgress(100D);
                 downloadStatus.setProgressFormat("100%");
-            }
-
-            @Override
-            public void removed(Aria2cStatus status) {
-                super.removed(status);
-            }
-
-            @Override
-            public void used(Aria2cStatus status) {
-                super.used(status);
             }
         });
 

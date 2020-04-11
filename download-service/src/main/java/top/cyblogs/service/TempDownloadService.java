@@ -1,25 +1,25 @@
 package top.cyblogs.service;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.thread.ThreadFactoryBuilder;
 import cn.hutool.crypto.SecureUtil;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.data.PathData;
 import top.cyblogs.data.SettingsData;
-import top.cyblogs.download.BaseDownloadListener;
-import top.cyblogs.download.DownloadUtils;
+import top.cyblogs.listener.DownloadListener;
 import top.cyblogs.listener.MergeVideoListener;
 import top.cyblogs.model.DownloadItem;
 import top.cyblogs.model.enums.DownloadStatus;
-import top.cyblogs.output.Aria2cStatus;
-import top.cyblogs.support.DownloadTaskStatus;
+import top.cyblogs.utils.DownloadUtils;
 import top.cyblogs.utils.ServiceUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.*;
 
 /**
  * 下载临时文件服务, 仅在当前模块使用
@@ -29,8 +29,6 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Slf4j
 class TempDownloadService {
-
-    private Integer currentRetryCount = 0;
 
     /**
      * 下载视频集合并合并
@@ -64,101 +62,93 @@ class TempDownloadService {
             return;
         }
 
+        FileUtil.mkParentDirs(targetFile);
+
         // 临时文件列表
         List<File> tempFiles = new ArrayList<>();
 
-        // 下载列表的状态
-        ArrayList<Aria2cStatus> listStatus = new ArrayList<>(urls.length);
-
-        // 因为下面循环中的监听器会被new出来两次，所以将合并视频的flag变量放在这里
-        AtomicBoolean isMerged = new AtomicBoolean(false);
+        // 下载完成数量计数
+        List<Downloading> listStatus = new ArrayList<>();
 
         for (int i = 0; i < urls.length; i++) {
 
-            File tempFile = new File(PathData.TEMP_FILE_PATH
-                    + SecureUtil.md5(urls[i].split("\\?")[0]) + ".m4s");
-
-            FileUtil.mkParentDirs(tempFile);
+            File tempFile = new File(PathData.TEMP_FILE_PATH + SecureUtil.md5(urls[i].split("\\?")[0]) + ".m4s");
 
             tempFiles.add(tempFile);
 
             // 初始化一个状态
-            listStatus.add(new Aria2cStatus());
+            listStatus.add(new Downloading());
 
             int index = i;
 
-            DownloadUtils.download(urls[index], tempFile, header, new BaseDownloadListener() {
+            DownloadUtils.download(urls[index], tempFile, header, new DownloadListener() {
 
                 @Override
-                public void paused(Aria2cStatus status) {
-                    super.paused(status);
+                public void connecting(String url) {
+                    downloadStatus.setStatusFormat("正在连接...");
                 }
 
-                // TODO 需要测试
                 @Override
-                public void error(Aria2cStatus status) {
+                public void start(long length) {
+                    downloadStatus.setStatusFormat("正在下载...");
+                    downloadStatus.setStatus(DownloadStatus.DOWNLOADING);
+                    listStatus.get(index).setLength(length);
+                    length = listStatus.stream().map(Downloading::getLength).reduce(Long::sum).orElse(0L);
+                    downloadStatus.setTotalSize(FileUtil.readableFileSize(length));
+                }
+
+                @Override
+                public void downloading(double progress, long speed, long time) {
+                    listStatus.get(index).setProcess(progress).setSpeed(speed).setTime(time);
+                    double currentProgress = listStatus.stream().mapToDouble(Downloading::getProcess).average().orElse(0D);
+                    long downloadSpeed = listStatus.stream().mapToLong(Downloading::getSpeed).reduce(Long::sum).orElse(0L);
+                    downloadStatus.setProgress(currentProgress * 100);
+                    downloadStatus.setProgressFormat(ServiceUtils.ratioString(progress));
+                    downloadStatus.setCurrentSpeed(FileUtil.readableFileSize(downloadSpeed) + "/S");
+                }
+
+                @Override
+                public void over(long time) {
+                    listStatus.get(index).setFinish(true);
+                    if (listStatus.stream().allMatch(Downloading::isFinish)) {
+                        // 下载完成
+                        downloadStatus.setCurrentSpeed(null);
+                        downloadStatus.setProgressFormat("100%");
+                        downloadStatus.setProgress(100.0);
+                        downloadStatus.setStatusFormat("等待合并...");
+                        if (listener != null) {
+                            ThreadFactory downloadFactory = ThreadFactoryBuilder.create().setNamePrefix("download-utils-").build();
+                            ExecutorService merge = new ThreadPoolExecutor(20, 2 << 12, 0L,
+                                    TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), downloadFactory);
+                            merge.submit(() -> {
+                                listener.startMerge(tempFiles, targetFile, downloadStatus);
+                                merge.shutdownNow();
+                            });
+                        }
+                    }
+                }
+
+                @Override
+                public void downloadError(Exception e) {
                     if (++currentRetryCount <= 5) {
                         log.info("正在重试下载...");
                         downloadStatus.setStatusFormat("重试下载...");
                         DownloadUtils.download(urls[index], targetFile, header, this);
                     }
                 }
-
-                @Override
-                public void removed(Aria2cStatus status) {
-                    super.removed(status);
-                }
-
-                @Override
-                public void used(Aria2cStatus status) {
-                    super.used(status);
-                }
-
-                @Override
-                public void active(Aria2cStatus status) {
-                    listStatus.set(index, status);
-                    if (listStatus.stream().anyMatch(x -> DownloadTaskStatus.ACTIVE.equals(x.getStatus()))) {
-                        // 当前下载尺寸
-                        AtomicLong current = new AtomicLong(0);
-                        // 总尺寸
-                        AtomicLong total = new AtomicLong(0);
-                        // 下载速度
-                        AtomicLong downloadSpeed = new AtomicLong(0);
-
-                        listStatus.forEach(x -> {
-                            current.addAndGet(x.getCompletedLength());
-                            total.addAndGet(x.getTotalLength());
-                            downloadSpeed.addAndGet(x.getDownloadSpeed());
-                        });
-
-                        downloadStatus.setStatusFormat("正在下载...");
-                        downloadStatus.setStatus(DownloadStatus.DOWNLOADING);
-                        downloadStatus.setProgress((double) current.get() / total.get() * 100);
-                        downloadStatus.setProgressFormat(ServiceUtils.ratioString(current.get(), total.get(), true));
-                        downloadStatus.setCurrentSpeed(FileUtil.readableFileSize(downloadSpeed.get()) + "/S");
-                        downloadStatus.setTotalSize(FileUtil.readableFileSize(total.get()));
-                    }
-                }
-
-                @Override
-                public synchronized void complete(Aria2cStatus status) {
-                    listStatus.set(index, status);
-                    // 加个锁防止执行太快导致下面的合并执行了两次
-                    synchronized (TempDownloadService.class) {
-                        if (!isMerged.get() && listStatus.stream().allMatch(x -> DownloadTaskStatus.COMPLETE.equals(x.getStatus()))) {
-                            isMerged.set(true);
-                            // 下载完成
-                            downloadStatus.setCurrentSpeed(null);
-                            downloadStatus.setProgressFormat("100%");
-                            downloadStatus.setProgress(100.0);
-                            downloadStatus.setStatusFormat("等待合并...");
-                            if (listener != null) {
-                                listener.startMerge(tempFiles, targetFile, downloadStatus);
-                            }
-                        }
-                    }
-                }
             });
         }
+    }
+
+    private Integer currentRetryCount = 0;
+
+    @Data
+    @Accessors(chain = true)
+    private static class Downloading {
+        private double process;
+        private long speed;
+        private long time;
+        private long length;
+        private boolean finish;
     }
 }

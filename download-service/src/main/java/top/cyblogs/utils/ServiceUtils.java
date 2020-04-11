@@ -1,21 +1,11 @@
 package top.cyblogs.utils;
 
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.thread.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import top.cyblogs.data.DownloadList;
 import top.cyblogs.exception.AlreadyExistsException;
 import top.cyblogs.model.DownloadItem;
 
-import java.io.File;
 import java.text.DecimalFormat;
-import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 
 /**
  * 工具
@@ -34,30 +24,14 @@ public class ServiceUtils {
         if (total == 0) {
             return isPercent ? "--%" : "-/-";
         }
-        return isPercent ? PERCENT_FORMAT.format((double) current / total * 100) + "%" : current + "/" + total;
+        return isPercent ? ratioString((double) current / total) : current + "/" + total;
     }
 
     /**
-     * 等待完成下载
-     * Aria2给出下载结束指令的时候，其实并没有下载完成，还在进行最后的处理，也就是aria2后缀文件还存在
+     * 格式化进度信息
      */
-    public static void waitingDownloadFinish(List<File> files, Consumer<List<File>> consumer) {
-        // 判断是否已经完成了，防止因为关闭线程不及时造成的多次合并问题
-        AtomicBoolean isFinished = new AtomicBoolean(false);
-
-        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNamePrefix("download-listener-pool-").build();
-        ScheduledExecutorService pool = new ScheduledThreadPoolExecutor(1, namedThreadFactory);
-
-        pool.scheduleAtFixedRate(() -> {
-            // 当前状态是还没有完成，并且Aria2文件都消失了，说明真正的下载完了
-            if (!isFinished.get() && files.stream().noneMatch(x -> new File(FileUtil.getCanonicalPath(x) + ".aria2").exists())) {
-                isFinished.set(true);
-                if (consumer != null) {
-                    consumer.accept(files);
-                }
-                pool.shutdownNow();
-            }
-        }, 0, 1, TimeUnit.SECONDS);
+    public static String ratioString(double progress) {
+        return PERCENT_FORMAT.format(progress * 100) + "%";
     }
 
     /**
